@@ -1,0 +1,133 @@
+<header class="main-header">
+    <!-- <h2>Thruster Control</h2> -->
+    <!-- <div class="status-indicator-alt">
+        <i class="fas fa-gamepad"></i> No Gamepad
+    </div> -->
+</header>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3>Control Mode</h3>
+    </div>
+    <div class="button-group">
+        <button class="btn active">Keyboard</button>
+        <button class="btn">Gamepad</button>
+        <button class="btn">Virtual Joystick</button>
+    </div>
+</section>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-bolt"></i> Individual Motor Testing</h3>
+        <button class="btn btn-primary">Start Test</button>
+    </div>
+    <div class="motor-grid">
+        <div class="motor-control">
+            <div class="motor-label">
+                <label>Front Left</label>
+            </div>
+            <div class="slider-action-wrapper">
+                <div class="slider-container">
+                    <span>Reverse</span>
+                    <input type="range" min="-100" max="100" value="0" class="motor-slider">
+                    <div class="slider-value-container">
+                        <span class="motor-value">0%</span> <span>Forward</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-motor-test"><i class="fas fa-play"></i> Start Test</button>
+            </div>
+        </div>
+        <div class="motor-control">
+            <div class="motor-label">
+                <label>Front Right</label>
+                <!-- <span class="motor-value">50%</span> -->
+            </div>
+            <div class="slider-action-wrapper">
+                <div class="slider-container">
+                    <span>Reverse</span>
+                    <input type="range" min="-100" max="100" value="0" class="motor-slider">
+                    <div class="slider-value-container">
+                        <span class="motor-value">0%</span> <span>Forward</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-motor-test"><i class="fas fa-play"></i> Start Test</button>
+            </div>
+        </div>
+        <div class="motor-control">
+            <div class="motor-label">
+                <label>Rear Left</label>
+                <!-- <span class="motor-value">-50%</span> -->
+            </div>
+            <div class="slider-action-wrapper">
+                <div class="slider-container">
+                    <span>Reverse</span>
+                    <input type="range" min="-100" max="100" value="0" class="motor-slider">
+                    <div class="slider-value-container">
+                        <span class="motor-value">0%</span> <span>Forward</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-motor-test"><i class="fas fa-play"></i> Start Test</button>
+            </div>
+        </div>
+        <div class="motor-control">
+            <div class="motor-label">
+                <label>Rear Right</label>
+                <!-- <span class="motor-value">0%</span> -->
+            </div>
+            <div class="slider-action-wrapper">
+                <div class="slider-container">
+                    <span>Reverse</span>
+                    <input type="range" min="-100" max="100" value="0" class="motor-slider">
+                    <div class="slider-value-container">
+                        <span class="motor-value">0%</span> <span>Forward</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-motor-test"><i class="fas fa-play"></i> Start Test</button>
+            </div>
+        </div>
+        <div class="motor-control">
+            <div class="motor-label">
+                <label>Top Vertical</label>
+                <!-- <span class="motor-value">0%</span> -->
+            </div>
+            <div class="slider-action-wrapper">
+                <div class="slider-container">
+                    <span>Reverse</span>
+                    <input type="range" min="-100" max="100" value="0" class="motor-slider">
+                    <div class="slider-value-container">
+                        <span class="motor-value">0%</span> <span>Forward</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-motor-test"><i class="fas fa-play"></i> Start Test</button>
+            </div>
+        </div>
+        <div class="motor-control">
+            <div class="motor-label">
+                <label>Bottom Vertical</label>
+                <!-- <span class="motor-value">0%</span> -->
+            </div>
+            <div class="slider-action-wrapper">
+                <div class="slider-container">
+                    <span>Reverse</span>
+                    <input type="range" min="-100" max="100" value="0" class="motor-slider">
+                    <div class="slider-value-container">
+                        <span class="motor-value">0%</span> <span>Forward</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-motor-test"><i class="fas fa-play"></i> Start Test</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-th"></i> Preset Movement Tests</h3>
+    </div>
+    <div class="preset-grid">
+        <button class="preset-btn"><i class="fas fa-arrow-up"></i><span>Forward</span></button>
+        <button class="preset-btn"><i class="fas fa-arrow-down"></i><span>Backward</span></button>
+        <button class="preset-btn"><i class="fas fa-arrow-left"></i><span>Strafe Left</span></button>
+        <button class="preset-btn"><i class="fas fa-arrow-right"></i><span>Strafe Right</span></button>
+    </div>
+</section>

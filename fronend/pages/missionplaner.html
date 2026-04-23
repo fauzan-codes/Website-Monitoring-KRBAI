@@ -1,0 +1,72 @@
+<header class="main-header">
+</header>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-info-circle"></i> Mission Status</h3>
+    </div>
+    <div class="mission-status-grid">
+        <div class="status-item-mp">
+            <p>Mission Time</p>
+            <span class="status-value">00:00:00</span>
+        </div>
+        <div class="status-item-mp">
+            <p>Total Steps</p>
+            <span class="status-value">0</span>
+        </div>
+        <div class="status-item-mp">
+            <p>Current Step</p>
+            <span class="status-value">0</span>
+        </div>
+        <div class="status-item-mp">
+            <p>Progress</p>
+            <span class="status-value">0%</span>
+        </div>
+    </div>
+</section>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-plus-circle"></i> Add Mission Step</h3>
+    </div>
+    <form class="add-step-form">
+        <div class="form-group-mp">
+            <label>Action</label>
+            <div class="custom-select-wrapper">
+                <div class="custom-select">
+                    <div class="custom-select-trigger"><span>Select action</span><i class="fas fa-chevron-down arrow"></i></div>
+                    <div class="custom-options">
+                        <div class="custom-option" data-value="move_forward">Move Forward</div>
+                        <div class="custom-option" data-value="turn_left">Turn Left</div>
+                        <div class="custom-option" data-value="turn_right">Turn Right</div>
+                        <div class="custom-option" data-value="set_depth">Set Depth</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group-mp">
+            <label>Parameter</label>
+            <input type="number" placeholder="e.g., 10 (meters/degrees)">
+        </div>
+        <div class="form-group-mp">
+            <label>Duration (s)</label>
+            <input type="number" placeholder="e.g., 5 (seconds)">
+        </div>
+        <button type="submit" class="btn btn-primary btn-add-step">
+            <i class="fas fa-plus"></i> Add Step
+        </button>
+    </form>
+</section>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-tasks"></i> Mission Steps</h3>
+        <div class="action-buttons">
+            <button class="btn btn-primary"><i class="fas fa-play"></i> Start Mission</button>
+            <button class="btn btn-danger"><i class="fas fa-stop"></i> Stop Mission</button>
+        </div>
+    </div>
+    <div class="mission-steps-list">
+        <p class="no-steps-message">No mission steps added yet. Create your first step above.</p>
+    </div>
+</section>

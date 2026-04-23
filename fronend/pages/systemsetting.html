@@ -1,0 +1,105 @@
+<header class="main-header">
+    <!-- <h2>System Settings</h2> -->
+    <!-- <div class="status-indicator-alt">
+        Version 1.2.3
+    </div> -->
+</header>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-heartbeat"></i> System Status</h3>
+    </div>
+    <div class="system-status-grid">
+        <div class="status-item-sys">
+            <p>Version</p> <span class="status-value-sys">1.2.3</span>
+        </div>
+        <div class="status-item-sys">
+            <p>Uptime</p> <span class="status-value-sys">2d 14h 32m</span>
+        </div>
+        <div class="status-item-sys">
+            <p>CPU Usage</p> <span class="status-value-sys">19%</span>
+        </div>
+        <div class="status-item-sys">
+            <p>Memory</p> <span class="status-value-sys">58%</span>
+        </div>
+        <div class="status-item-sys">
+            <p>ROV Status</p> <span class="status-value-sys status-green"><i class="fas fa-check-circle"></i> Online</span>
+        </div>
+    </div>
+</section>
+
+<div class="settings-layout-grid">
+    <section class="control-section">
+        <div class="section-header">
+            <h3><i class="fas fa-palette"></i> UI Settings</h3>
+        </div>
+        <div class="settings-list">
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Dark/Light Theme</h4>
+                    <p>Switch between dark and light modes.</p>
+                </div>
+                <div class="theme-toggle">
+                    <i class="fas fa-sun"></i>
+                    <label class="switch"><input type="checkbox" id="theme-toggle-checkbox" checked><span class="slider round"></span></label>
+                    <i class="fas fa-moon"></i>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info"><h4>Responsive Mode</h4><p>Optimize layout for mobile devices.</p></div>
+                <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info"><h4>Auto-save Settings</h4><p>Automatically save configuration changes.</p></div>
+                <label class="switch"><input type="checkbox" checked><span class="slider round"></span></label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info"><h4>Notifications</h4><p>Show system alerts and updates.</p></div>
+                <label class="switch"><input type="checkbox" checked><span class="slider round"></span></label>
+            </div>
+        </div>
+    </section>
+
+    <section class="control-section">
+        <div class="section-header">
+            <h3><i class="fas fa-database"></i> Data Management</h3>
+        </div>
+        <div class="data-management-group">
+            <h4>Export Settings</h4>
+            <p>Download current system configuration.</p>
+            <button class="btn"><i class="fas fa-download"></i> Export Configuration</button>
+        </div>
+        <div class="data-management-group">
+            <h4>Import Settings</h4>
+            <p>Load configuration from file.</p>
+            <button class="btn"><i class="fas fa-upload"></i> Import Configuration</button>
+        </div>
+        <div class="data-management-group">
+            <h4>Reset System</h4>
+            <p>Reset all settings to defaults.</p>
+            <button class="btn btn-danger"><i class="fas fa-history"></i> Reset All Settings</button>
+        </div>
+    </section>
+</div>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-info-circle"></i> System Information</h3>
+    </div>
+    <div class="system-info-grid">
+        <div class="info-column">
+            <h4>Software</h4>
+            <div class="info-row"><span>Application Version:</span><p>1.2.1</p></div>
+            <div class="info-row"><span>Build Date:</span><p>2024.01.15</p></div>
+            <div class="info-row"><span>Framework:</span><p>React 18.x.x</p></div>
+            <div class="info-row"><span>Runtime:</span><p>Vite 5.x.x</p></div>
+        </div>
+        <div class="info-column">
+            <h4>Hardware</h4>
+            <div class="info-row"><span>Platform:</span><p>Web Browser</p></div>
+            <div class="info-row"><span>Memory Usage:</span><p>58%</p></div>
+            <div class="info-row"><span>CPU Usage:</span><p>19%</p></div>
+            <div class="info-row"><span>Uptime:</span><p>2d 14h 32m</p></div>
+        </div>
+    </div>
+</section>

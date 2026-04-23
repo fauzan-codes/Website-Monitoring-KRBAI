@@ -1,0 +1,135 @@
+<header class="main-header">
+    <!-- <h2>Sensor & PID Tuning</h2> -->
+    <!-- <div class="status-indicator-alt">
+        PID Idle
+    </div> -->
+</header>
+
+<div class="status-grid">
+    <div class="status-widget">
+        <p><i class="fas fa-compass"></i> Gyro X (Roll)</p>
+        <div class="widget-value">-1.16°</div>
+        <div class="widget-info">Real-time</div>
+    </div>
+    <div class="status-widget">
+        <p><i class="fas fa-compass"></i> Gyro Y (Pitch)</p>
+        <div class="widget-value">3.16°</div>
+        <div class="widget-info">Real-time</div>
+    </div>
+    <div class="status-widget">
+        <p><i class="fas fa-compass"></i> Gyro Z (Yaw)</p>
+        <div class="widget-value">-1.53°</div>
+        <div class="widget-info">Real-time</div>
+    </div>
+    <div class="status-widget">
+        <p><i class="fas fa-ruler-vertical"></i> Depth</p>
+        <div class="widget-value">15.38m</div>
+        <div class="widget-info">Target: 15.0m</div>
+    </div>
+</div>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-bullseye"></i> Target Depth Setting</h3>
+    </div>
+    <div class="input-group">
+        <label for="target-depth">Target Depth (m):</label>
+        <input type="number" id="target-depth" value="15">
+        <button class="btn btn-primary">Set Target</button>
+    </div>
+</section>
+
+<div class="chart-grid">
+    <div class="chart-widget">
+        <div class="section-header">
+            <h3><i class="fas fa-chart-line"></i> Gyroscope Data</h3>
+        </div>
+        <div class="chart-placeholder">
+            </div>
+    </div>
+    <div class="chart-widget">
+        <div class="section-header">
+            <h3><i class="fas fa-chart-area"></i> Depth Control</h3>
+        </div>
+        <div class="chart-placeholder">
+            </div>
+    </div>
+</div>
+
+<div class="pid-tuning-grid">
+    <div class="pid-widget">
+        <div class="section-header">
+            <h3><i class="fas fa-compass"></i> Gyro PID Tuning</h3>
+            <div class="custom-select-wrapper pid-axis-select">
+                <div class="custom-select">
+                    <div class="custom-select-trigger">
+                        <span>Axis: X (Roll)</span>
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="custom-options">
+                        <div class="custom-option selected" data-value="x">Axis: X (Roll)</div>
+                        <div class="custom-option" data-value="y">Axis: Y (Pitch)</div>
+                        <div class="custom-option" data-value="z">Axis: Z (Yaw)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pid-controls">
+            <div class="pid-slider-group">
+                <div class="pid-label">
+                    <label>Kp (Proportional):</label>
+                    <span class="pid-value">1.000</span>
+                </div>
+                <input type="range" min="0" max="10" value="1" step="0.001" class="pid-slider">
+            </div>
+            <div class="pid-slider-group">
+                <div class="pid-label">
+                    <label>Ki (Integral):</label>
+                    <span class="pid-value">0.100</span>
+                </div>
+                <input type="range" min="0" max="1" value="0.1" step="0.001" class="pid-slider">
+            </div>
+            <div class="pid-slider-group">
+                <div class="pid-label">
+                    <label>Kd (Derivative):</label>
+                    <span class="pid-value">0.050</span>
+                </div>
+                <input type="range" min="0" max="1" value="0.05" step="0.001" class="pid-slider">
+            </div>
+        </div>
+    </div>
+
+    <div class="pid-widget">
+        <div class="section-header">
+            <h3><i class="fas fa-cogs"></i> Depth PID Tuning</h3>
+        </div>
+        <div class="pid-controls">
+            <div class="pid-slider-group">
+                <div class="pid-label">
+                    <label>Kp (Proportional):</label>
+                    <span class="pid-value">2.000</span>
+                </div>
+                <input type="range" min="0" max="10" value="2" step="0.001" class="pid-slider">
+            </div>
+            <div class="pid-slider-group">
+                <div class="pid-label">
+                    <label>Ki (Integral):</label>
+                    <span class="pid-value">0.200</span>
+                </div>
+                <input type="range" min="0" max="1" value="0.2" step="0.001" class="pid-slider">
+            </div>
+            <div class="pid-slider-group">
+                <div class="pid-label">
+                    <label>Kd (Derivative):</label>
+                    <span class="pid-value">0.100</span>
+                </div>
+                <input type="range" min="0" max="1" value="0.1" step="0.001" class="pid-slider">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="action-footer">
+    <button class="btn btn-primary"><i class="fas fa-check-circle"></i> Apply PID Settings</button>
+    <button class="btn"><i class="fas fa-history"></i> Revert to Defaults</button>
+</div>

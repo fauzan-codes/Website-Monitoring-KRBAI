@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seadiver</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="sidebar-icon-only">
+        <div class="sidebar-header">
+            <a href="#" data-page="dashboard" class="logo">
+                <img src="assets/bai.jpg" alt="Logo Tim">
+            </a>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active"><a href="#" data-page="dashboard" title="Dashboard"><i class="fas fa-th-large"></i></a></li>
+            <li><a href="#" data-page="thrustercontrol" title="Thruster Control"><i class="fas fa-bolt"></i></a></li>
+            <li><a href="#" data-page="missionplaner" title="Mission Planner"><i class="fas fa-map-signs"></i></a></li>
+            <li><a href="#" data-page="sensorpid" title="Sensor & PID Tuning"><i class="fas fa-sliders-h"></i></a></li>
+            <li><a href="#" data-page="camerasettings" title="Camera Settings"><i class="fas fa-camera"></i></a></li>
+            <li><a href="#" data-page="connection" title="Connection"><i class="fas fa-wifi"></i></a></li>
+            <li><a href="#" data-page="datalogging" title="Data Logging"><i class="fas fa-database"></i></a></li>
+            <li><a href="#" data-page="systemsetting" title="System Settings"><i class="fas fa-cog"></i></a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <header class="top-bar">
+            <div class="top-bar-title">
+                <h4>Seadiver Control</h4>
+                <h2 id="page-title">Dashboard</h2>
+            </div>
+            <div class="top-bar-right">
+                <div id="page-status-container">
+                    </div>
+                <div class="status-indicator online">
+                    <span class="status-dot"></span>
+                    System Online
+                </div>
+            </div>
+        </header>
+
+        <main id="main-content" class="main-content">
+            </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

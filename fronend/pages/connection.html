@@ -1,0 +1,135 @@
+<header class="main-header">
+    <!-- <h2>Connection Settings</h2> -->
+    <!-- <div class="status-indicator online">
+        <span class="status-dot"></span>
+        Connected
+    </div> -->
+</header>
+
+<div class="connection-status-grid">
+    <div class="status-widget">
+        <p><i class="fas fa-satellite-dish"></i> Status</p>
+        <div class="widget-value status-text-green">Connected</div>
+        <div class="widget-info">WiFi Mode</div>
+    </div>
+    <div class="status-widget">
+        <p><i class="fas fa-signal"></i> Signal</p>
+        <div class="widget-value">85%</div>
+        <div class="widget-info">Excellent</div>
+    </div>
+</div>
+
+<div class="connection-layout-grid">
+    
+    <section class="control-section">
+        <div class="section-header">
+            <h3><i class="fas fa-wifi"></i> Connection Mode</h3>
+        </div>
+        <div class="form-group">
+            <label for="connection-mode">Connection Mode</label>
+            <div class="custom-select-wrapper">
+                <div class="custom-select">
+                    <div class="custom-select-trigger">
+                        <span><i class="fas fa-wifi"></i> WiFi Network</span>
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="custom-options">
+                        <div class="custom-option selected" data-value="wifi">
+                            <i class="fas fa-wifi"></i> WiFi Network
+                        </div>
+                        <div class="custom-option" data-value="lan">
+                            <i class="fas fa-network-wired"></i> LAN Cable
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="wifi-settings">
+            <div class="form-group">
+                <label for="network-ssid">Network SSID</label>
+                <input type="text" id="network-ssid" value="ROV_Control_Network" readonly>
+            </div>
+            <div class="form-group">
+                <label for="rov-ip-wifi">ROV IP Address</label>
+                <input type="text" id="rov-ip-wifi" value="192.168.1.100" readonly>
+            </div>
+            <div class="form-group">
+                <label for="port-wifi">Port</label>
+                <input type="text" id="port-wifi" value="8080" readonly>
+            </div>
+        </div>
+        <div id="lan-settings" style="display: none;">
+            <div class="form-group">
+                <label for="rov-ip-lan">ROV IP Address</label>
+                <input type="text" id="rov-ip-lan" value="192.168.1.100" readonly>
+            </div>
+            <div class="form-group">
+                <label for="port-lan">Port</label>
+                <input type="text" id="port-lan" value="8080" readonly>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button id="connection-btn" class="btn btn-danger">
+                <i class="fas fa-times-circle"></i> 
+                <span>Disconnect</span>
+            </button>
+            <button class="btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+    </section>
+
+    <section class="control-section">
+        <div class="section-header">
+            <h3><i class="fas fa-file-alt"></i> Connection Log</h3>
+        </div>
+        <ul class="connection-log">
+            <li>
+                <i class="fas fa-check-circle log-icon-green"></i>
+                <div class="log-details">
+                    <p>Connection Established</p>
+                    <span>Successfully connected to ROV at 192.168.1.100</span>
+                </div>
+                <span class="log-time">11:20:11 AM</span>
+            </li>
+            <li>
+                <i class="fas fa-check-circle log-icon-green"></i>
+                <div class="log-details">
+                    <p>Signal Quality Check</p>
+                    <span>Signal strength: 85% - Good</span>
+                </div>
+                <span class="log-time">11:22:11 AM</span>
+            </li>
+            <li>
+                <i class="fas fa-check-circle log-icon-green"></i>
+                <div class="log-details">
+                    <p>Data Stream Started</p>
+                    <span>Receiving sensor data at 10Hz</span>
+                </div>
+                <span class="log-time">11:24:11 AM</span>
+            </li>
+        </ul>
+    </section>
+</div>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-network-wired"></i> Network Diagnostics</h3>
+    </div>
+    <div class="diagnostics-grid">
+        <div class="diagnostic-item">
+            <p>Latency</p>
+            <span class="diagnostic-value">12ms</span>
+        </div>
+        <div class="diagnostic-item">
+            <p>Packet Loss</p>
+            <span class="diagnostic-value">0</span>
+        </div>
+        <div class="diagnostic-item">
+            <p>Throughput</p>
+            <span class="diagnostic-value">2.4MB/s</span>
+        </div>
+        <div class="diagnostic-item">
+            <p>Uptime</p>
+            <span class="diagnostic-value">99.9%</span>
+        </div>
+    </div>
+</section>

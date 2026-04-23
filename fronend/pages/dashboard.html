@@ -1,0 +1,153 @@
+<header class="main-header">
+</header>
+
+<div class="widget-grid">
+
+    <div class="widget large">
+        <div class="widget-header">
+            <h3><i class="fas fa-video"></i> Front Camera</h3>
+            <div class="camera-controls">
+                <button class="btn-icon" title="Screenshot">
+                    <i class="fas fa-camera"></i>
+                </button>
+                <button class="btn-icon" title="Start Recording">
+                    <i class="fas fa-video"></i>
+                </button>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider round"></span>
+                </label>
+                <span class="status-badge live">Live</span>
+            </div>
+        </div>
+        <div class="widget-body camera-feed">
+            <i class="fas fa-camera"></i>
+            <p>Camera Feed</p>
+        </div>
+    </div>
+
+    <div class="widget large">
+        <div class="widget-header">
+            <h3><i class="fas fa-video"></i> Bottom Camera</h3>
+            <div class="camera-controls">
+                <button class="btn-icon" title="Screenshot">
+                    <i class="fas fa-camera"></i>
+                </button>
+                <button class="btn-icon" title="Start Recording">
+                    <i class="fas fa-video"></i>
+                </button>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+                <span class="status-badge offline">Offline</span>
+            </div>
+        </div>
+        <div class="widget-body camera-feed">
+            <i class="fas fa-camera-slash"></i>
+            <p>Camera Offline</p>
+        </div>
+    </div>
+
+    <div class="widget">
+        <h3><i class="fas fa-battery-full"></i> Battery</h3>
+        <div class="widget-value">75.3%</div>
+        <div class="progress-bar">
+            <div class="progress" style="width: 75.3%;"></div>
+        </div>
+    </div>
+
+    <div class="widget">
+        <h3><i class="fas fa-ruler-vertical"></i> Depth</h3>
+        <div class="widget-value">15.7m</div>
+        <div class="widget-info">Target: 15.0m</div>
+    </div>
+
+    <div class="widget">
+        <h3><i class="fas fa-arrows-up-down-left-right"></i> Movement</h3>
+        <div class="widget-value">Hovering</div>
+        <div class="widget-info">
+            <span class="status-badge stable">Stable</span>
+        </div>
+    </div>
+
+    <div class="widget">
+        <h3><i class="fas fa-clock"></i> Mission Time</h3>
+        <div id="time-display" class="widget-value">00:00:00</div>
+        <div class="mission-controls">
+            <button id="mission-btn" class="mission-btn start">
+                <i class="fas fa-play"></i>
+                <span>Start Mission</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="widget large">
+        <div class="widget-header">
+            <h3><i class="fas fa-cube"></i> 3D Orientation</h3>
+            <button class="reset-btn">
+                <i class="fas fa-sync-alt"></i> Reset
+            </button>
+        </div>
+        <div class="widget-body">
+            <div class="orientation-view"></div>
+            <div class="orientation-data">
+                <div class="data-item">
+                    <p>Roll (X)</p>
+                    <span>40.5°</span>
+                </div>
+                <div class="data-item">
+                    <p>Pitch (Y)</p>
+                    <span>4.5°</span>
+                </div>
+                <div class="data-item">
+                    <p>Yaw (Z)</p>
+                    <span class="negative">-4.4°</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="widget large">
+        <div class="widget-header">
+            <h3><i class="fas fa-cogs"></i> Thruster Status</h3>
+        </div>
+        <div class="widget-body">
+            <div class="thruster-list">
+                <div class="thruster-item">
+                    <p>Front Left</p>
+                    <div class="progress-bar"><div class="progress" style="width: 65%;"></div></div>
+                    <span class="thruster-status forward">Forward 65%</span>
+                </div>
+                <div class="thruster-item">
+                    <p>Front Right</p>
+                    <div class="progress-bar"><div class="progress" style="width: 0%;"></div></div>
+                    <span class="thruster-status">Off 0%</span>
+                </div>
+                <div class="thruster-item">
+                    <p>Rear Left</p>
+                    <div class="progress-bar"><div class="progress" style="width: 0%;"></div></div>
+                    <span class="thruster-status">Off 0%</span>
+                </div>
+                <div class="thruster-item">
+                    <p>Rear Right</p>
+                    <div class="progress-bar"><div class="progress" style="width: 0%;"></div></div>
+                    <span class="thruster-status">Off 0%</span>
+                </div>
+                <div class="thruster-item">
+                    <p>Top</p>
+                    <div class="progress-bar"><div class="progress" style="width: 78%;"></div></div>
+                    <span class="thruster-status forward">Forward 78%</span>
+                </div>
+                <div class="thruster-item">
+                    <p>Bottom</p>
+                    <div class="progress-bar"><div class="progress" style="width: 45%;"></div></div>
+                    <span class="thruster-status forward">Forward 45%</span>
+                </div>
+            </div>
+            <div class="widget-footer">
+                <p>Active Thrusters: 3 of 6</p>
+            </div>
+        </div>
+    </div>
+</div>

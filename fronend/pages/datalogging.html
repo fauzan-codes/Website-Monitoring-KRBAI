@@ -1,0 +1,111 @@
+<header class="main-header">
+    <!-- <h2>Data Logging</h2> -->
+    <!-- <div id="logging-status-indicator" class="status-indicator-alt stopped">
+        Stopped
+    </div> -->
+</header>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-cogs"></i> Data Logging Controls</h3>
+    </div>
+    <div class="logging-controls-grid">
+        <div class="form-group-mp">
+            <label>Logging Interval</label>
+            <div class="custom-select-wrapper">
+                <div class="custom-select">
+                    <div class="custom-select-trigger"><span>1 second</span><i class="fas fa-chevron-down arrow"></i></div>
+                    <div class="custom-options">
+                        <div class="custom-option selected" data-value="1">1 second</div>
+                        <div class="custom-option" data-value="5">5 seconds</div>
+                        <div class="custom-option" data-value="10">10 seconds</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="current-session-info">
+            <h4>Current Session</h4>
+            <div class="session-stat"><span>Entries:</span><p id="session-entries">0</p></div>
+            <div class="session-stat"><span>Duration:</span><p id="session-duration">0s</p></div>
+            <div class="session-stat"><span>Est. Size:</span><p id="session-size">0 B</p></div>
+        </div>
+        <div class="save-session-actions">
+            <h4>Save Session</h4>
+            <button class="btn"><i class="fas fa-file-csv"></i> Export as CSV</button>
+            <button class="btn"><i class="fas fa-file-excel"></i> Export as Excel</button>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <button id="start-stop-logging-btn" class="btn btn-primary">
+            <i class="fas fa-play-circle"></i> <span>Start Logging</span>
+        </button>
+    </div>
+</section>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-hdd"></i> Storage Overview</h3>
+    </div>
+    <div class="storage-overview-grid">
+        <div class="storage-stat">
+            <p>Used</p>
+            <span class="storage-value">45.7 MB</span>
+        </div>
+        <div class="storage-stat">
+            <p>Files</p>
+            <span class="storage-value">3</span>
+        </div>
+        <div class="storage-stat">
+            <p>Total Entries</p>
+            <span class="storage-value">53,600</span>
+        </div>
+        <div class="storage-stat wide">
+            <p>Storage</p>
+            <div class="storage-bar">
+                <div class="storage-progress" style="width: 4.5%;"></div>
+            </div>
+            <span class="storage-info">978.3 MB free</span>
+        </div>
+    </div>
+</section>
+
+<section class="control-section">
+    <div class="section-header">
+        <h3><i class="fas fa-save"></i> Saved Log Files</h3>
+    </div>
+    <ul class="saved-files-list">
+        <li>
+            <i class="fas fa-file-csv file-icon"></i>
+            <div class="file-info">
+                <h4>mission_2024_01_15.csv</h4>
+                <p>15,420 entries • 2.3 MB • 9/10/2025</p>
+            </div>
+            <div class="file-actions">
+                <button class="btn"><i class="fas fa-download"></i> Download</button>
+                <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+            </div>
+        </li>
+        <li>
+            <i class="fas fa-file-excel file-icon excel"></i>
+            <div class="file-info">
+                <h4>deep_dive_session.xlsx</h4>
+                <p>21,950 entries • 5.1 MB • 9/9/2025</p>
+            </div>
+            <div class="file-actions">
+                <button class="btn"><i class="fas fa-download"></i> Download</button>
+                <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+            </div>
+        </li>
+        <li>
+            <i class="fas fa-file-csv file-icon"></i>
+            <div class="file-info">
+                <h4>thruster_calibration.csv</h4>
+                <p>9,230 entries • 1.8 MB • 9/8/2025</p>
+            </div>
+            <div class="file-actions">
+                <button class="btn"><i class="fas fa-download"></i> Download</button>
+                <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+            </div>
+        </li>
+    </ul>
+</section>
