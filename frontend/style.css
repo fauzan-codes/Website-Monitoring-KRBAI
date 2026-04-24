@@ -1,8 +1,11 @@
 /* frontend/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    border: none;
 }
 
 :root {
@@ -133,7 +136,7 @@ body {
 /* ==================== DASHBOARD GRID ==================== */
 .widget-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
 }
 
@@ -205,6 +208,12 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 
 /* ===== LIVE BADGE ===== */
+.badge{
+    width: 6rem;
+    display: flex;
+    justify-content: center;
+}
+
 .live-badge {
     /* background: rgba(0, 255, 100, 0.15);
     color: #00ff88; */
@@ -214,9 +223,9 @@ input:checked + .slider:before { transform: translateX(22px); }
     font-weight: 600;
 }
 
-.live-badge.live { background-color:rgba(0, 255, 100, 0.15); color: #00ff88;; }
+.live-badge.live { background-color:rgba(0, 255, 100, 0.15); color: #00ff88; }
 .live-badge.offline { background-color: rgba(108, 117, 125, 0.2); color: var(--text-secondary); }
-.live-badge.stable { background-color: rgba(0, 184, 212, 0.2); color: #00b8d4; }
+.live-badge.connecting { background-color: rgba(255, 193, 7, 0.2);color: #ffc107;}
 
 /* ===== CAMERA ===== */
 .camera-controls {
@@ -225,7 +234,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     gap: 15px;
 }
 
-.btn-icon {
+.camera-controls .btn-icon {
     background: none;
     border: none;
     color: var(--text-secondary);
@@ -235,8 +244,8 @@ input:checked + .slider:before { transform: translateX(22px); }
     transition: color 0.3s;
 }
 
-.btn-icon:hover {
-    color: var(--accent-primary);
+.camera-controls .btn-icon:hover {
+    color: #00b8d4;
 }
 
 .camera-controls .switch {
@@ -259,6 +268,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     width: 100%;
     height: 300px;
     background: #111820;
+    border: none;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
@@ -272,7 +282,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
+    display: none;
 }
 
 /* ===== placeholder saat kamera offline ===== */
@@ -289,7 +299,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 /* ===== VALUE ===== */
 .widget-value {
-    font-size: 32px;
+    font-size: 2.2rem;
     font-weight: 600;
     margin-top: 10px;
 }
@@ -320,8 +330,12 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 .orientation-data {
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     text-align: center;
+}
+
+.data-item {
+    flex: 1;
 }
 
 .data-item p {
@@ -337,31 +351,40 @@ input:checked + .slider:before { transform: translateX(22px); }
     padding: 12px; 
     border: none; 
     border-radius: 8px; 
-    background: #00b8d4;
+    /* background: #00b8d4; */
+    background-color: transparent;
     color: black;
     font-family: 'Poppins', sans-serif; 
     font-size: 1rem; 
     font-weight: 500; 
     cursor: pointer; 
-    display: flex; 
+    display: block; 
     align-items: center; 
     justify-content: center; 
     transition: background-color 0.3s, color 0.3s;
 }
-.mission-btn:hover { background: #00d8f5; } 
 .mission-btn i { margin-right: 8px; }
 .mission-btn.start { 
-    background-color: var(--accent-primary); 
+    display: block;
+    background-color: #00b8d4; 
     color: #f4f7fa; 
 }
 .mission-btn.start:hover { background-color: #00e5ff; }
-.mission-btn.stop { background-color: #ff4d4f; color: #fff; }
+.mission-btn.stop { 
+    background-color: #ff4d4f;
+    display: none; 
+    color: #fff; 
+}
 .mission-btn.stop:hover { background-color: #ff7875; }
-.mission-btn.reset { background-color: #434d5b; color: #1a222d; }
+.mission-btn.reset { 
+    background-color: #434d5b; 
+    display: none; 
+    color: #e0e0e0; 
+}
 .mission-btn.reset:hover { background-color: #5c6776; }
 .reset-btn {
-    background-color: #dee2e6; 
-    border: none; color: #1a222d; 
+    background-color: #303a4a; 
+    border: none; color: #e0e0e0; 
     padding: 8px 15px; 
     border-radius: 8px; 
     cursor: pointer; 
@@ -373,7 +396,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 .reset-btn i { margin-right: 5px; }
 .orientation-view {
     height: 150px; 
-    background-color: #f4f7fa; 
+    background-color: #1a222d; 
     border-radius: 8px; 
     margin-bottom: 25px; 
 }

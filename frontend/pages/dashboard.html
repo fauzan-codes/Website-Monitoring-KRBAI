@@ -16,18 +16,21 @@
                     <i class="fas fa-video"></i>
                 </button>
                 <label class="switch">
-                    <input type="checkbox" checked>
+                    <input id="front-toggle" type="checkbox">
                     <span class="slider round"></span>
                 </label>
-                <span class="live-badge live">LIVE</span>
+                <div class="badge">
+                    <span id="front-badge" class="live-badge offline">OFFLINE</span>
+                </div>
             </div>
         </div>
 
         <div class="camera-feed">
-            <img id="front-camera" class="front-camera" src="">
-            <div id="camera-placeholder" class="camera-placeholder">
+            <img id="front-camera" class="camera-stream" src="">
+            <div id="front-placeholder" class="camera-placeholder">
                 <i class="fas fa-camera"></i>
-                <p>Waiting for robot camera...</p>
+                <!-- <p>Waiting for robot camera...</p> -->
+                <p>Camera Offline</p>
             </div>
         </div>
     </div>
@@ -47,16 +50,18 @@
                     <i class="fas fa-video"></i>
                 </button>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input id="bottom-toggle" type="checkbox">
                     <span class="slider round"></span>
                 </label>
-                <span class="live-badge offline">OFFLINE</span>
+                <div class="badge">
+                    <span id="bottom-badge" class="live-badge offline">OFFLINE</span>
+                </div>
             </div>
         </div>
 
         <div class="camera-feed">
-            <img id="Bottom-camera" class="bottom-camera" src="">
-            <div id="camera-placeholder" class="camera-placeholder">
+            <img id="bottom-camera" class="camera-stream" src="">
+            <div id="bottom-placeholder" class="camera-placeholder">
                 <i class="fas fa-camera"></i>
                 <p>Camera Offline</p>
             </div>
@@ -100,39 +105,6 @@
         <div class="widget-value movement-value">Waiting...</div>
     </div>
 
-
-    <!-- ORIENTATION -->
-    <div class="widget large">
-        <div class="widget-header">
-            <h3>
-                <i class="fas fa-compass"></i>
-                Orientation
-            </h3>
-        </div>
-
-        <div class="orientation-view"></div>
-
-        <div class="orientation-data">
-
-            <div class="data-item">
-                <p>Yaw</p>
-                <div class="widget-value yaw-value">0°</div>
-            </div>
-
-            <div class="data-item">
-                <p>Pitch</p>
-                <div class="widget-value pitch-value">0°</div>
-            </div>
-
-            <div class="data-item">
-                <p>Roll</p>
-                <div class="widget-value roll-value">0°</div>
-            </div>
-
-        </div>
-    </div>
-
-
     <div class="widget small">
         <h3>
             <i class="fas fa-clock"></i>
@@ -141,11 +113,55 @@
         <div id="time-display" class="widget-value">
             00:00:00
         </div>
-        <button id="mission-btn" class="mission-btn">
+        <button id="btn-start" class="mission-btn start">
             <i class="fas fa-play"></i>
             <span>Start Mission</span>
         </button>
+        <button id="btn-stop" class="mission-btn stop">
+            <i class="fas fa-stop"></i>
+            <span>Stop Mission</span>
+        </button>
+        <button id="btn-reset" class="mission-btn reset">
+            <i class="fas fa-redo"></i>
+            <span>Reset Mission</span>
+        </button>
     </div>
+
+
+    <!-- ORIENTATION -->
+    <div class="widget large">
+        <div class="widget-header">
+            <h3>
+                <i class="fas fa-compass"></i>
+                Orientation
+            </h3>
+            <button class="reset-btn">
+                <i class="fas fa-sync-alt"></i> Reset
+            </button>
+        </div>
+
+        <div class="orientation-view"></div>
+
+        <div class="orientation-data">
+
+            <div class="data-item">
+                <p>Roll (X)</p>
+                <div class="widget-value roll-value">0°</div>
+            </div>
+
+            <div class="data-item">
+                <p>Pitch (Y)</p>
+                <div class="widget-value pitch-value">0°</div>
+            </div>
+
+            <div class="data-item">
+                <p>Yaw (Z)</p>
+                <div class="widget-value yaw-value">0°</div>
+            </div>
+
+        </div>
+    </div>
+
 
     <div class="widget large">
         <div class="widget-header">

@@ -1,51 +1,118 @@
 // frontend/script.js
-
-
 let telemetrySocket = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Page loaded");
 
     if (document.getElementById("front-camera")) {
-        initCamera();
-    }
+        initFrontCamera();
+    } 
 
     if (document.querySelector(".depth-value")) {
         initTelemetry();
     }
-
-    if (document.getElementById("mission-btn")) {
-        initMissionTimer();
-    }
+    
+    initMissionTimer();
+    
 
 });
 
 
 // ===== Camera =====
-function initCamera() {
+function initFrontCamera() {
     const img = document.getElementById("front-camera");
-    const placeholder = document.getElementById("camera-placeholder");
+    const placeholder = document.getElementById("front-placeholder");
+    const toggle = document.getElementById("front-toggle");
+    const badge = document.getElementById("front-badge");
 
-    if (!img) {
-        console.log("❌ front-camera tidak ditemukan");
+    if (!img || !toggle || !placeholder || !badge) {
+        console.log("❌ element ada yang gak ketemu");
         return;
     }
 
     const cameraURL = `${window.location.origin}/camera/stream`;
-    console.log("Connecting to camera:", cameraURL);
 
-    img.src = cameraURL;
+    let isLoading = false;
 
-    img.onload = () => {
-        console.log("✅ Camera stream tampil");
-        if (placeholder) placeholder.style.display = "none";
-    };
+    function setOfflineUI() {
+        placeholder.style.display = "block";
+        placeholder.querySelector("p").textContent = "Camera Offline";
 
-    img.onerror = () => {
-        console.log("❌ Kamera gagal tampil");
-        const placeholder = document.getElementById("camera-placeholder");
-        if (placeholder) placeholder.style.display = "block";
-    };
+        badge.textContent = "OFFLINE";
+        badge.className = "live-badge offline";
+
+        img.removeAttribute("src");
+        img.style.display = "none";
+    }
+
+    function setWaitingUI() {
+        placeholder.style.display = "block";
+        placeholder.querySelector("p").textContent = "Waiting for robot camera...";
+
+        badge.textContent = "CONNECTING";
+        badge.className = "live-badge connecting";
+
+        img.style.display = "none";
+    }
+
+    function setLiveUI() {
+        placeholder.style.display = "none";
+
+        badge.textContent = "LIVE";
+        badge.className = "live-badge live";
+
+        img.style.display = "block";
+    }
+
+    toggle.addEventListener("change", () => {
+        if (isLoading) {
+            console.log("⏳ Masih connecting, tunggu 5 detik...");
+            toggle.checked = true; 
+            return;
+        }
+
+        if (!toggle.checked) {
+            setOfflineUI();
+            return;
+        }
+
+        isLoading = true;
+        toggle.disabled = true; 
+        setWaitingUI();
+        img.src = cameraURL;
+
+        timeoutId = setTimeout(() => {
+            if (isLoading) {
+                console.log("⏰ Timeout connecting");
+
+                isLoading = false;
+                toggle.disabled = false;
+            }
+        }, 2000);
+
+        img.onload = () => {
+            console.log("✅ Camera live");
+
+            clearTimeout(timeoutId);
+
+            setLiveUI();
+
+            isLoading = false;
+            toggle.disabled = false;
+        };
+
+        img.onerror = () => {
+            console.log("❌ Camera error");
+
+            clearTimeout(timeoutId);
+            setOfflineUI();
+            isLoading = false;
+            toggle.disabled = false;
+            toggle.checked = false;
+        };
+    });
+    setOfflineUI();
+    toggle.checked = false;
 }
 
 
@@ -111,57 +178,64 @@ function updateText(selector, value) {
 
 // ===== timer mision =====
 function initMissionTimer() {
-    const btn = document.getElementById("mission-btn");
+    console.log("INIT TIMER JALAN");
+    const startBtn = document.getElementById("btn-start");
+    const stopBtn = document.getElementById("btn-stop");
+    const resetBtn = document.getElementById("btn-reset");
     const display = document.getElementById("time-display");
 
-    if (!btn || !display) return;
+    if (!startBtn || !stopBtn || !resetBtn) return;
 
     let sec = 0;
-    let running = false;
-    let interval;
+    let interval = null;
 
-    btn.addEventListener("click", () => {
-        if (!running) {
-            running = true;
+    function updateDisplay() {
+        const h = String(Math.floor(sec / 3600)).padStart(2, "0");
+        const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+        const s = String(sec % 60).padStart(2, "0");
 
-            btn.innerHTML = `
-                <i class="fas fa-stop"></i>
-                <span>Stop Mission</span>
-            `;
+        display.textContent = `${h}:${m}:${s}`;
+    }
 
-            interval = setInterval(() => {
-                sec++;
+    // ===== START =====
+    startBtn.addEventListener("click", () => {
+        if (interval) return; 
+        console.log("start click")
 
-                const h = String(
-                    Math.floor(sec / 3600)
-                ).padStart(2, "0");
+        startBtn.style.display = "none";
+        stopBtn.style.display = "block";
+        resetBtn.style.display = "none";
 
-                const m = String(
-                    Math.floor((sec % 3600) / 60)
-                ).padStart(2, "0");
+        interval = setInterval(() => {
+            sec++;
+            updateDisplay();
+        }, 1000);
+    });
 
-                const s = String(
-                    sec % 60
-                ).padStart(2, "0");
+    // ===== STOP (PAUSE) =====
+    stopBtn.addEventListener("click", () => {
+        clearInterval(interval);
+        console.log("stop click")
 
-                display.textContent =
-                    `${h}:${m}:${s}`;
-            }, 1000);
+        startBtn.style.display = "none";
+        stopBtn.style.display = "none";
+        resetBtn.style.display = "block";
 
-        } else {
-            running = false;
+        interval = null;
+    });
 
-            clearInterval(interval);
+    // ===== RESET =====
+    resetBtn.addEventListener("click", () => {
+        clearInterval(interval);
+        console.log("reset click")
 
-            sec = 0;
+        startBtn.style.display = "block";
+        stopBtn.style.display = "none";
+        resetBtn.style.display = "none";
 
-            display.textContent = "00:00:00";
-
-            btn.innerHTML = `
-                <i class="fas fa-play"></i>
-                <span>Start Mission</span>
-            `;
-        }
+        interval = null;
+        sec = 0;
+        updateDisplay();
     });
 }
 
