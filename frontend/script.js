@@ -4,70 +4,100 @@ let telemetrySocket = null;
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Page loaded");
 
-    if (document.getElementById("front-camera")) {
-        initFrontCamera();
-    } 
+    const baseURL = `${window.location.origin}/camera/stream`;
+    initCamera({
+        imgId: "front-camera",
+        placeholderId: "front-placeholder",
+        toggleId: "front-toggle",
+        badgeId: "front-badge",
+        url: baseURL
+    });
+
+    initCamera({
+        imgId: "bottom-camera",
+        placeholderId: "bottom-placeholder",
+        toggleId: "bottom-toggle",
+        badgeId: "bottom-badge",
+        url: "link"
+    });
 
     if (document.querySelector(".depth-value")) {
         initTelemetry();
     }
     
     initMissionTimer();
-    
-
 });
 
 
 // ===== Camera =====
-function initFrontCamera() {
-    const img = document.getElementById("front-camera");
-    const placeholder = document.getElementById("front-placeholder");
-    const toggle = document.getElementById("front-toggle");
-    const badge = document.getElementById("front-badge");
+function initCamera({ imgId, placeholderId, toggleId, badgeId, url }) {
+    const img = document.getElementById(imgId);
+    const placeholder = document.getElementById(placeholderId);
+    const toggle = document.getElementById(toggleId);
+    const badge = document.getElementById(badgeId);
 
     if (!img || !toggle || !placeholder || !badge) {
-        console.log("❌ element ada yang gak ketemu");
+        console.log("Invalid camera:", imgId);
         return;
     }
 
-    const cameraURL = `${window.location.origin}/camera/stream`;
-
     let isLoading = false;
+    let lock = false;
+    let timeoutId = null;
 
     function setOfflineUI() {
         placeholder.style.display = "block";
         placeholder.querySelector("p").textContent = "Camera Offline";
-
         badge.textContent = "OFFLINE";
         badge.className = "live-badge offline";
-
         img.removeAttribute("src");
         img.style.display = "none";
+        toggle.checked = false;
+    }
+
+    function setErrorUI() {
+        placeholder.style.display = "block";
+        placeholder.querySelector("p").textContent = "Invalid Camera";
+        badge.textContent = "OFFLINE";
+        badge.className = "live-badge offline";
+        img.removeAttribute("src");
+        img.style.display = "none";
+        toggle.checked = false;
     }
 
     function setWaitingUI() {
         placeholder.style.display = "block";
         placeholder.querySelector("p").textContent = "Waiting for robot camera...";
-
         badge.textContent = "CONNECTING";
         badge.className = "live-badge connecting";
-
         img.style.display = "none";
     }
 
     function setLiveUI() {
         placeholder.style.display = "none";
-
         badge.textContent = "LIVE";
         badge.className = "live-badge live";
-
         img.style.display = "block";
     }
 
     toggle.addEventListener("change", () => {
-        if (isLoading) {
-            console.log("⏳ Masih connecting, tunggu 5 detik...");
-            toggle.checked = true; 
+        if (!url) {
+            console.log("Invalid URL camera: ", url);
+            setErrorUI();
+            return;
+        }
+
+        if (lock) {
+            toggle.checked = true;
+            return;
+        }
+
+        if (isLoading && !toggle.checked) {
+
+            clearTimeout(timeoutId);
+            isLoading = false;
+
+            setOfflineUI();
             return;
         }
 
@@ -77,40 +107,39 @@ function initFrontCamera() {
         }
 
         isLoading = true;
-        toggle.disabled = true; 
+        lock = true;
+
         setWaitingUI();
-        img.src = cameraURL;
+        img.src = url;
+
+        setTimeout(() => {
+            lock = false;
+        }, 2000);
 
         timeoutId = setTimeout(() => {
             if (isLoading) {
-                console.log("⏰ Timeout connecting");
-
+                console.log("Timeout connecting camera");
                 isLoading = false;
-                toggle.disabled = false;
+                toggle.checked = false;
+                setOfflineUI();
             }
-        }, 2000);
+        }, 15000);
 
         img.onload = () => {
-            console.log("✅ Camera live");
-
             clearTimeout(timeoutId);
-
-            setLiveUI();
-
             isLoading = false;
-            toggle.disabled = false;
+            setLiveUI();
         };
 
         img.onerror = () => {
-            console.log("❌ Camera error");
-
+            console.log("Camera error, Tolong cek lagi url atau kameranya");
+            console.log("URL Camera: \"", url, "\"")
             clearTimeout(timeoutId);
-            setOfflineUI();
             isLoading = false;
-            toggle.disabled = false;
-            toggle.checked = false;
+            setErrorUI;
         };
     });
+
     setOfflineUI();
     toggle.checked = false;
 }
@@ -135,7 +164,7 @@ function initTelemetry() {
 
     telemetrySocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log("Telemetry:", data);
+        // console.log("Telemetry:", data);
 
         updateText(".depth-value", `${data.depth} m`);
         updateText(".yaw-value", `${data.yaw}°`);
@@ -178,7 +207,6 @@ function updateText(selector, value) {
 
 // ===== timer mision =====
 function initMissionTimer() {
-    console.log("INIT TIMER JALAN");
     const startBtn = document.getElementById("btn-start");
     const stopBtn = document.getElementById("btn-stop");
     const resetBtn = document.getElementById("btn-reset");
@@ -197,10 +225,9 @@ function initMissionTimer() {
         display.textContent = `${h}:${m}:${s}`;
     }
 
-    // ===== START =====
+    // start
     startBtn.addEventListener("click", () => {
         if (interval) return; 
-        console.log("start click")
 
         startBtn.style.display = "none";
         stopBtn.style.display = "block";
@@ -212,10 +239,9 @@ function initMissionTimer() {
         }, 1000);
     });
 
-    // ===== STOP (PAUSE) =====
+    // stop/pause
     stopBtn.addEventListener("click", () => {
         clearInterval(interval);
-        console.log("stop click")
 
         startBtn.style.display = "none";
         stopBtn.style.display = "none";
@@ -224,10 +250,9 @@ function initMissionTimer() {
         interval = null;
     });
 
-    // ===== RESET =====
+    // reset
     resetBtn.addEventListener("click", () => {
         clearInterval(interval);
-        console.log("reset click")
 
         startBtn.style.display = "block";
         stopBtn.style.display = "none";
