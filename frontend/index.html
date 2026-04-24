@@ -1,0 +1,62 @@
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seadiver Control</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar-icon-only">
+        <div class="sidebar-header">
+            <a href="#" class="logo">
+                <img src="/static/assets/bai.jpg" alt="logo">
+            </a>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="active"><a href="/"><i class="fas fa-th-large"></i></a></li>
+            <li><a href="/thruster-control"><i class="fas fa-bolt"></i></a></li>
+            <li><a href="/mission-planner"><i class="fas fa-map-signs"></i></a></li>
+            <li><a href="/sensor"><i class="fas fa-sliders-h"></i></a></li>
+            <li><a href="/camera-settings"><i class="fas fa-camera"></i></a></li>
+            <li><a href="/connection"><i class="fas fa-wifi"></i></a></li>
+            <li><a href="/data-logging"><i class="fas fa-database"></i></a></li>
+            <li><a href="/system-setting"><i class="fas fa-cog"></i></a></li>
+        </ul>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="main-container">
+
+        <header class="top-bar">
+            <div class="top-bar-title">
+                <h4>Seadiver Control</h4>
+                <h2>Dashboard Monitoring</h2>
+            </div>
+
+            <div class="status-indicator online">
+                <span class="status-dot"></span>
+                System Online
+            </div>
+        </header>
+
+        <main class="main-content">
+            {% include page %}
+        </main>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

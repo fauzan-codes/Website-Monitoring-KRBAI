@@ -1,0 +1,275 @@
+/* frontend/style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-primary: #1a222d;
+    --bg-secondary: #222b36;
+    --border-color: #303a4a;
+    --text-primary: #ffffff;
+    --text-secondary: #8a92a1;
+    --accent: #00b8d4;
+    --green: #00c853;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-primary);
+    display: flex;
+    color: white;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar-icon-only {
+    width: 80px;
+    height: 100vh;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar-header {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu li a {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.sidebar-menu li.active a {
+    background: var(--bg-primary);
+    color: var(--accent);
+}
+
+/* ===== MAIN ===== */
+.main-container {
+    flex: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== TOPBAR ===== */
+.top-bar {
+    height: 80px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.top-bar-title h4 {
+    font-size: 24px;
+}
+
+.top-bar-title h2 {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* ===== STATUS ===== */
+.status-indicator {
+    background: rgba(0, 200, 83, 0.1);
+    color: var(--green);
+    padding: 10px 18px;
+    border-radius: 20px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 25px;
+}
+
+
+
+
+
+
+
+/* ==================== DASHBOARD GRID ==================== */
+.widget-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.widget {
+    background: var(--bg-secondary); 
+    border: 1px solid #303a4a;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.widget.large {
+    grid-column: span 2;
+}
+
+.widget.small {
+    grid-column: span 1;
+}
+
+/* ===== HEADER ===== */
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.widget h3 {
+    font-size: 16px;
+    color: #8a92a1;
+}
+
+.widget h3 i {
+    color: #00b8d4;
+    margin-right: 8px;
+}
+
+/* ===== LIVE BADGE ===== */
+.live-badge {
+    background: rgba(0, 255, 100, 0.15);
+    color: #00ff88;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ===== CAMERA ===== */
+.camera-feed {
+    width: 100%;
+    height: 300px;
+    background: #111820;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== fill frame camera ===== */
+.camera-stream {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ===== placeholder saat kamera offline ===== */
+.camera-placeholder {
+    position: absolute;
+    text-align: center;
+    color: #8a92a1;
+}
+
+.camera-placeholder i {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+/* ===== VALUE ===== */
+.widget-value {
+    font-size: 32px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* ===== BATTERY ===== */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #374151;
+    border-radius: 20px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #00b8d4;
+}
+
+/* ===== ORIENTATION ===== */
+.orientation-view {
+    height: 180px;
+    background: #111820;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.orientation-data {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.data-item p {
+    color: #8a92a1;
+    margin-bottom: 8px;
+}
+
+
+/* ===== BUTTON ===== */
+.mission-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #00b8d4;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.mission-btn:hover {
+    background: #00d8f5;
+}
+
+
+
+
+
+

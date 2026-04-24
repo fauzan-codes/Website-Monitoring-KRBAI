@@ -1,3 +1,4 @@
+# app/websocket/manager.py
 from fastapi import WebSocket
 
 class ConnectionManager:
@@ -12,7 +13,15 @@ class ConnectionManager:
         self.clients.remove(ws)
 
     async def broadcast(self, data):
+        disconnected = []
+
         for client in self.clients:
-            await client.send_json(data)
+            try:
+                await client.send_json(data)
+            except:
+                disconnected.append(client)
+
+        for client in disconnected:
+            self.clients.remove(client)
 
 manager = ConnectionManager()

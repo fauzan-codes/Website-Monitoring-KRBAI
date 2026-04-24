@@ -1,0 +1,128 @@
+<!-- frontend/pages/dashboard.html -->
+<div class="widget-grid">
+
+    <!-- FRONT CAMERA -->
+    <div class="widget large">
+        <div class="widget-header">
+            <h3>
+                <i class="fas fa-video"></i>
+                Front Camera
+            </h3>
+            <span class="live-badge">LIVE</span>
+        </div>
+
+        <div class="camera-feed">
+            <img id="front-camera" class="front-camera" src="">
+            <div id="camera-placeholder" class="camera-placeholder">
+                <i class="fas fa-camera-slash"></i>
+                <p>Waiting for robot camera...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM CAMERA -->
+    <div class="widget large">
+        <div class="widget-header">
+            <h3>
+                <i class="fas fa-video"></i>
+                Bottom Camera
+            </h3>
+            <span class="live-badge">OFFLINE</span>
+        </div>
+
+        <div class="camera-feed">
+            <img id="front-camera" class="front-camera" src="">
+            <div id="camera-placeholder" class="camera-placeholder">
+                <i class="fas fa-camera-slash"></i>
+                <p>Camera Offline</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- BATTERY -->
+    <div class="widget small">
+        <h3>
+            <i class="fas fa-battery-full"></i>
+            Battery
+        </h3>
+
+        <div class="widget-value battery-value">Waiting...</div>
+
+        <div class="progress-bar">
+            <div class="progress battery-progress"></div>
+        </div>
+    </div>
+
+
+    <!-- DEPTH -->
+    <div class="widget small">
+        <h3>
+            <i class="fas fa-water"></i>
+            Depth
+        </h3>
+
+        <div class="widget-value depth-value">Waiting...</div>
+    </div>
+
+
+    <!-- MOVEMENT -->
+    <div class="widget small">
+        <h3>
+            <i class="fas fa-arrows-up-down-left-right"></i>
+            Movement
+        </h3>
+
+        <div class="widget-value movement-value">Waiting...</div>
+    </div>
+
+
+    <!-- ORIENTATION -->
+    <div class="widget large">
+        <div class="widget-header">
+            <h3>
+                <i class="fas fa-compass"></i>
+                Orientation
+            </h3>
+        </div>
+
+        <div class="orientation-view"></div>
+
+        <div class="orientation-data">
+
+            <div class="data-item">
+                <p>Yaw</p>
+                <div class="widget-value yaw-value">0°</div>
+            </div>
+
+            <div class="data-item">
+                <p>Pitch</p>
+                <div class="widget-value pitch-value">0°</div>
+            </div>
+
+            <div class="data-item">
+                <p>Roll</p>
+                <div class="widget-value roll-value">0°</div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="widget small">
+        <h3>
+            <i class="fas fa-clock"></i>
+            Mission Timer
+        </h3>
+
+        <div id="time-display" class="widget-value">
+            00:00:00
+        </div>
+
+        <button id="mission-btn" class="mission-btn">
+            <i class="fas fa-play"></i>
+            <span>Start Mission</span>
+        </button>
+    </div>
+
+</div>
