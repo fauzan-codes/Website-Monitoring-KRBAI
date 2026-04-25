@@ -29,7 +29,6 @@
             <img id="front-camera" class="camera-stream" src="">
             <div id="front-placeholder" class="camera-placeholder">
                 <i class="fas fa-camera"></i>
-                <!-- <p>Waiting for robot camera...</p> -->
                 <p>Camera Offline</p>
             </div>
         </div>
@@ -92,6 +91,7 @@
         </h3>
 
         <div class="widget-value depth-value">Waiting...</div>
+        <div class="widget-info">Target: 1.5m</div>
     </div>
 
 
@@ -103,6 +103,9 @@
         </h3>
 
         <div class="widget-value movement-value">Waiting...</div>
+        <div class="widget-info">
+            <span class="status-move stable">Stable</span>
+        </div>
     </div>
 
     <div class="widget small">
@@ -167,41 +170,86 @@
         <div class="widget-header">
             <h3><i class="fas fa-cogs"></i> Thruster Status</h3>
         </div>
+
         <div class="widget-body">
             <div class="thruster-list">
+
                 <div class="thruster-item">
                     <p>Front Left</p>
-                    <div class="progress-bar"><div class="progress" style="width: 65%;"></div></div>
-                    <span class="thruster-status forward">Forward 65%</span>
+                    <div class="progress-bar">
+                        <div class="progress thruster-front-left"></div>
+                    </div>
+                    <div class="thruster-info">
+                        <span class="thruster-status front-left-text">Off</span>
+                        <span class="thruster-value front-left-value">0</span>
+                        <span class="thruster-percent">%</span>
+                    </div>
                 </div>
+
                 <div class="thruster-item">
                     <p>Front Right</p>
-                    <div class="progress-bar"><div class="progress" style="width: 0%;"></div></div>
-                    <span class="thruster-status">Off 0%</span>
+                    <div class="progress-bar">
+                        <div class="progress thruster-front-right"></div>
+                    </div>
+                    <div class="thruster-info">
+                        <span class="thruster-status front-right-text">Off</span>
+                        <span class="thruster-value front-right-value">0</span>
+                        <span class="thruster-percent">%</span>
+                    </div>
                 </div>
+
                 <div class="thruster-item">
                     <p>Rear Left</p>
-                    <div class="progress-bar"><div class="progress" style="width: 0%;"></div></div>
-                    <span class="thruster-status">Off 0%</span>
+                    <div class="progress-bar">
+                        <div class="progress thruster-rear-left"></div>
+                    </div>
+                    <div class="thruster-info">
+                        <span class="thruster-status rear-left-text">Off</span>
+                        <span class="thruster-value rear-left-value">0</span>
+                        <span class="thruster-percent">%</span>
+                    </div>
                 </div>
+
                 <div class="thruster-item">
                     <p>Rear Right</p>
-                    <div class="progress-bar"><div class="progress" style="width: 0%;"></div></div>
-                    <span class="thruster-status">Off 0%</span>
+                    <div class="progress-bar">
+                        <div class="progress thruster-rear-right"></div>
+                    </div>
+                    <div class="thruster-info">
+                        <span class="thruster-status rear-right-text">Off</span>
+                        <span class="thruster-value rear-right-value">0</span>
+                        <span class="thruster-percent">%</span>
+                    </div>
                 </div>
+
                 <div class="thruster-item">
                     <p>Top</p>
-                    <div class="progress-bar"><div class="progress" style="width: 78%;"></div></div>
-                    <span class="thruster-status forward">Forward 78%</span>
+                    <div class="progress-bar">
+                        <div class="progress thruster-top"></div>
+                    </div>
+                    <div class="thruster-info">
+                        <span class="thruster-status top-text">Off</span>
+                        <span class="thruster-value top-value">0</span>
+                        <span class="thruster-percent">%</span>
+                    </div>
                 </div>
+
                 <div class="thruster-item">
                     <p>Bottom</p>
-                    <div class="progress-bar"><div class="progress" style="width: 45%;"></div></div>
-                    <span class="thruster-status forward">Forward 45%</span>
+                    <div class="progress-bar">
+                        <div class="progress thruster-bottom"></div>
+                    </div>
+                    <div class="thruster-info">
+                        <span class="thruster-status bottom-text">Off</span>
+                        <span class="thruster-value bottom-value">0</span>
+                        <span class="thruster-percent">%</span>
+                    </div>
                 </div>
+
             </div>
-            <div class="widget-footer">
-                <p>Active Thrusters: 3 of 6</p>
+
+            <div class="thruster-footer">
+                <p class="active-thrusters">Active Thrusters: 0 of 6</p>
             </div>
         </div>
     </div>

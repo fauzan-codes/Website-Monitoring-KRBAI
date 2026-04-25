@@ -33,15 +33,15 @@ def dashboard(request: Request):
     )
 
 
-# @app.get("/thruster-control")
-# def camera_page(request: Request):
-#     return templates.TemplateResponse(
-#         "index.html",
-#         {
-#             "request": request,
-#             "page": "pages/thrustercontrol.html"
-#         }
-#     )
+@app.get("/thruster-control")
+def camera_page(request: Request):
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "page": "pages/thrustercontrol.html"
+        }
+    )
 
 
 # @app.get("/mission-planner")

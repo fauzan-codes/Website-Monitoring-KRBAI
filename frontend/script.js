@@ -4,7 +4,60 @@ let telemetrySocket = null;
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Page loaded");
 
+    const path = window.location.pathname;
+
+    if (path === "/") {
+        initDashboard();
+    }
+
+    if (path === "/thruster-control") {
+        initThrusterControl();
+    }
+
+    initSidebarToggle();
+    setActiveSidebar();
+});
+
+
+// ==== Side Bar System =====
+function initSidebarToggle() {
+    const sidebar = document.querySelector(".sidebar-icon-only");
+    const logo = document.querySelector(".logo-top");
+    const overlay = document.querySelector(".sidebar-overlay");
+
+    if (!sidebar || !logo || !overlay) return;
+    logo.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        if (window.innerWidth <= 900) {
+            sidebar.classList.add("active");
+            overlay.classList.add("active");
+        }
+    });
+    overlay.addEventListener("click", () => {
+        sidebar.classList.remove("active");
+        overlay.classList.remove("active");
+    });
+
+    document.querySelectorAll(".sidebar-menu a").forEach(link => {
+        link.addEventListener("click", () => {
+            if (window.innerWidth <= 900) {
+                sidebar.classList.remove("active");
+                overlay.classList.remove("active");
+            }
+        });
+    });
+}
+
+
+
+
+
+
+// ===== DASHBOARD =====
+function initDashboard() {
     const baseURL = `${window.location.origin}/camera/stream`;
+
     initCamera({
         imgId: "front-camera",
         placeholderId: "front-placeholder",
@@ -18,15 +71,29 @@ document.addEventListener("DOMContentLoaded", () => {
         placeholderId: "bottom-placeholder",
         toggleId: "bottom-toggle",
         badgeId: "bottom-badge",
-        url: "link"
+        url: null
     });
 
-    if (document.querySelector(".depth-value")) {
-        initTelemetry();
-    }
-    
+    initTelemetry();
     initMissionTimer();
-});
+}
+
+// ===== ThrusterControl =====
+function initThrusterControl() {
+    const sliders = document.querySelectorAll(".motor-slider");
+
+    sliders.forEach(slider => {
+        const valueText = slider
+            .closest(".slider-container")
+            .querySelector(".motor-value");
+
+        slider.addEventListener("input", () => {
+            valueText.textContent = `${slider.value}%`;
+        });
+    });
+
+    console.log("Thruster control initialized");
+}
 
 
 // ===== Camera =====
@@ -110,7 +177,7 @@ function initCamera({ imgId, placeholderId, toggleId, badgeId, url }) {
         lock = true;
 
         setWaitingUI();
-        img.src = url;
+        img.src = `${url}?t=${Date.now()}`;
 
         setTimeout(() => {
             lock = false;
@@ -136,7 +203,7 @@ function initCamera({ imgId, placeholderId, toggleId, badgeId, url }) {
             console.log("URL Camera: \"", url, "\"")
             clearTimeout(timeoutId);
             isLoading = false;
-            setErrorUI;
+            setErrorUI();
         };
     });
 
@@ -148,6 +215,16 @@ function initCamera({ imgId, placeholderId, toggleId, badgeId, url }) {
 // ===== Telemetry =====
 let reconnectCount = 0;
 function initTelemetry() {
+    if (
+        telemetrySocket &&
+        (
+            telemetrySocket.readyState === WebSocket.OPEN ||
+            telemetrySocket.readyState === WebSocket.CONNECTING
+        )
+    ) {
+        return;
+    }
+    
     if (telemetrySocket && telemetrySocket.readyState === WebSocket.OPEN) {
         return;
     }
@@ -175,6 +252,14 @@ function initTelemetry() {
 
         const batteryBar = document.querySelector(".battery-progress");
         if (batteryBar) batteryBar.style.width = `${data.battery}%`;
+
+        const thrusters = data.thrusters;
+        updateThruster("front-left", thrusters.front_left);
+        updateThruster("front-right", thrusters.front_right);
+        updateThruster("rear-left", thrusters.rear_left);
+        updateThruster("rear-right", thrusters.rear_right);
+        updateThruster("top", thrusters.top);
+        updateThruster("bottom", thrusters.bottom);
     };
 
     telemetrySocket.onclose = () => {
@@ -195,12 +280,63 @@ function initTelemetry() {
 }
 
 
-// ===== update text =====
+
+
+// ===== update data dashboard =====
 function updateText(selector, value) {
     const element = document.querySelector(selector);
 
     if (element) {
         element.textContent = value;
+    }
+}
+
+function updateThruster(name, value) {
+    const bar = document.querySelector(`.thruster-${name}`);
+    const statusText = document.querySelector(`.${name}-text`);
+    const valueText = document.querySelector(`.${name}-value`);
+
+    if (!bar || !statusText || !valueText) return;
+
+    // update bar
+    bar.style.width = `${value}%`;
+
+    let status = "Off";
+
+    if (value > 0) {
+        status = "Active";
+    }
+
+    // reset class
+    statusText.classList.remove("active");
+
+    if (value > 0) {
+        statusText.classList.add("active");
+    }
+
+    // update UI
+    statusText.textContent = status;
+    valueText.textContent = value;
+
+    updateActiveThrusters();
+}
+
+function updateActiveThrusters() {
+    const bars = document.querySelectorAll(".thruster-list .progress");
+    let activeCount = 0;
+
+    bars.forEach(bar => {
+        const width = parseInt(bar.style.width) || 0;
+
+        if (width > 0) {
+            activeCount++;
+        }
+    });
+
+    const activeText = document.querySelector(".active-thrusters");
+
+    if (activeText) {
+        activeText.textContent = `Active Thrusters: ${activeCount} of 6`;
     }
 }
 
@@ -266,13 +402,19 @@ function initMissionTimer() {
 
 
 // ===== page active =====
-const path = window.location.pathname;
+function setActiveSidebar() {
+    const path = window.location.pathname;
 
-document.querySelectorAll(".sidebar-menu a").forEach(a => {
-    if (a.getAttribute("href") === path) {
-        a.parentElement.classList.add("active");
-    }
-});
+    document.querySelectorAll(".sidebar-menu li").forEach(li => {
+        li.classList.remove("active");
+    });
+
+    document.querySelectorAll(".sidebar-menu a").forEach(a => {
+        if (a.getAttribute("href") === path) {
+            a.parentElement.classList.add("active");
+        }
+    });
+}
 
 
 

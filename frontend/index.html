@@ -25,21 +25,68 @@
         </div>
 
         <ul class="sidebar-menu">
-            <li class="active"><a href="/"><i class="fas fa-th-large"></i></a></li>
-            <li><a href="/thruster-control"><i class="fas fa-bolt"></i></a></li>
-            <li><a href="/mission-planner"><i class="fas fa-map-signs"></i></a></li>
-            <li><a href="/sensor"><i class="fas fa-sliders-h"></i></a></li>
-            <li><a href="/camera-settings"><i class="fas fa-camera"></i></a></li>
-            <li><a href="/connection"><i class="fas fa-wifi"></i></a></li>
-            <li><a href="/data-logging"><i class="fas fa-database"></i></a></li>
-            <li><a href="/system-setting"><i class="fas fa-cog"></i></a></li>
+            <li class="active">
+                <a href="/">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/thruster-control">
+                    <i class="fas fa-bolt"></i>
+                    <span>Thuster</span>
+                </a>
+            </li>
+            <li>
+                <a href="/mission-planner">
+                    <i class="fas fa-map-signs"></i>
+                    <span>Mission</span>
+                </a>
+            </li>
+            <li>
+                <a href="/sensor">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Sensor</span>
+                </a>
+            </li>
+            <li>
+                <a href="/camera-settings">
+                    <i class="fas fa-camera"></i>
+                    <span>Camera</span>
+                </a>
+            </li>
+            <li>
+                <a href="/connection" class="wifi-icon">
+                    <i class="fas fa-wifi"></i>
+                    <!-- <i class="fas fa-camera"></i> -->
+                    <span>Connection</span>
+                </a>
+            </li>
+            <li>
+                <a href="/data-logging">
+                    <i class="fas fa-database"></i>
+                    <span>Datalog</span>
+                </a>
+            </li>
+            <li>
+                <a href="/system-setting">
+                    <i class="fas fa-cog"></i>
+                    <span>System</span>
+                </a>
+            </li>
         </ul>
     </nav>
+
+    <div class="sidebar-overlay"></div>
 
     <!-- MAIN -->
     <div class="main-container">
 
         <header class="top-bar">
+            <a href="#" class="logo-top">
+                <img src="/static/assets/bai.jpg" alt="logo">
+            </a>
+
             <div class="top-bar-title">
                 <h4>Seadiver Control</h4>
                 <h2>Dashboard Monitoring</h2>
@@ -47,7 +94,7 @@
 
             <div class="status-indicator online">
                 <span class="status-dot"></span>
-                System Online
+                <span>System Online</span>
             </div>
         </header>
 

@@ -8,10 +8,9 @@ router = APIRouter()
 
 @router.websocket("/ws/telemetry")
 async def telemetry_ws(ws: WebSocket):
-    # await ws.accept()
     await manager.connect(ws)
 
-    print("✅ Client telemetry connected")
+    print("Client telemetry connected")
 
     try:
         while True:
@@ -26,12 +25,26 @@ async def telemetry_ws(ws: WebSocket):
                     "Backward",
                     "Hovering",
                     "Descending"
-                ])
+                ]),
+
+                "thrusters": {
+                    "front_left": random.randint(0, 100),
+                    "front_right": random.randint(0, 100),
+                    "rear_left": random.randint(0, 100),
+                    "rear_right": random.randint(0, 100),
+                    "top": random.randint(0, 100),
+                    "bottom": random.randint(0, 100)
+                }
             }
 
             await ws.send_json(data)
             await asyncio.sleep(1)
 
     except WebSocketDisconnect:
-        print("❌ Client disconnected")
+        print("Client disconnected")
+
+    except Exception as e:
+        print("Telemetry error:", e)
+
+    finally:
         manager.disconnect(ws)
