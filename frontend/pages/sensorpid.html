@@ -1,136 +1,210 @@
 <!-- frontend/pages/sensorpid.html -->
-<header class="main-header">
-    <!-- <h2>Sensor & PID Tuning</h2> -->
-    <!-- <div class="status-indicator-alt">
-        PID Idle
-    </div> -->
-</header>
+<div class="sensor-page">
 
-<div class="status-grid">
-    <div class="status-widget">
-        <p><i class="fas fa-compass"></i> Gyro X (Roll)</p>
-        <div class="widget-value">-1.16°</div>
-        <div class="widget-info">Real-time</div>
-    </div>
-    <div class="status-widget">
-        <p><i class="fas fa-compass"></i> Gyro Y (Pitch)</p>
-        <div class="widget-value">3.16°</div>
-        <div class="widget-info">Real-time</div>
-    </div>
-    <div class="status-widget">
-        <p><i class="fas fa-compass"></i> Gyro Z (Yaw)</p>
-        <div class="widget-value">-1.53°</div>
-        <div class="widget-info">Real-time</div>
-    </div>
-    <div class="status-widget">
-        <p><i class="fas fa-ruler-vertical"></i> Depth</p>
-        <div class="widget-value">15.38m</div>
-        <div class="widget-info">Target: 15.0m</div>
-    </div>
-</div>
-
-<section class="control-section">
-    <div class="section-header">
-        <h3><i class="fas fa-bullseye"></i> Target Depth Setting</h3>
-    </div>
-    <div class="input-group">
-        <label for="target-depth">Target Depth (m):</label>
-        <input type="number" id="target-depth" value="15">
-        <button class="btn btn-primary">Set Target</button>
-    </div>
-</section>
-
-<div class="chart-grid">
-    <div class="chart-widget">
+    <!-- ================= SENSOR OVERVIEW ================= -->
+    <section class="control-section">
         <div class="section-header">
-            <h3><i class="fas fa-chart-line"></i> Gyroscope Data</h3>
-        </div>
-        <div class="chart-placeholder">
-            </div>
-    </div>
-    <div class="chart-widget">
-        <div class="section-header">
-            <h3><i class="fas fa-chart-area"></i> Depth Control</h3>
-        </div>
-        <div class="chart-placeholder">
-            </div>
-    </div>
-</div>
+            <h3>
+                <i class="fas fa-microchip"></i>
+                Sensor Monitoring
+            </h3>
 
-<div class="pid-tuning-grid">
-    <div class="pid-widget">
-        <div class="section-header">
-            <h3><i class="fas fa-compass"></i> Gyro PID Tuning</h3>
-            <div class="custom-select-wrapper pid-axis-select">
-                <div class="custom-select">
-                    <div class="custom-select-trigger">
-                        <span>Axis: X (Roll)</span>
-                        <i class="fas fa-chevron-down arrow"></i>
-                    </div>
-                    <div class="custom-options">
-                        <div class="custom-option selected" data-value="x">Axis: X (Roll)</div>
-                        <div class="custom-option" data-value="y">Axis: Y (Pitch)</div>
-                        <div class="custom-option" data-value="z">Axis: Z (Yaw)</div>
-                    </div>
-                </div>
+            <div class="badge">
+                <span class="live-badge live">LIVE</span>
             </div>
         </div>
-        <div class="pid-controls">
-            <div class="pid-slider-group">
-                <div class="pid-label">
-                    <label>Kp (Proportional):</label>
-                    <span class="pid-value">1.000</span>
-                </div>
-                <input type="range" min="0" max="10" value="1" step="0.001" class="pid-slider">
-            </div>
-            <div class="pid-slider-group">
-                <div class="pid-label">
-                    <label>Ki (Integral):</label>
-                    <span class="pid-value">0.100</span>
-                </div>
-                <input type="range" min="0" max="1" value="0.1" step="0.001" class="pid-slider">
-            </div>
-            <div class="pid-slider-group">
-                <div class="pid-label">
-                    <label>Kd (Derivative):</label>
-                    <span class="pid-value">0.050</span>
-                </div>
-                <input type="range" min="0" max="1" value="0.05" step="0.001" class="pid-slider">
-            </div>
-        </div>
-    </div>
 
-    <div class="pid-widget">
-        <div class="section-header">
-            <h3><i class="fas fa-cogs"></i> Depth PID Tuning</h3>
-        </div>
-        <div class="pid-controls">
-            <div class="pid-slider-group">
-                <div class="pid-label">
-                    <label>Kp (Proportional):</label>
-                    <span class="pid-value">2.000</span>
-                </div>
-                <input type="range" min="0" max="10" value="2" step="0.001" class="pid-slider">
-            </div>
-            <div class="pid-slider-group">
-                <div class="pid-label">
-                    <label>Ki (Integral):</label>
-                    <span class="pid-value">0.200</span>
-                </div>
-                <input type="range" min="0" max="1" value="0.2" step="0.001" class="pid-slider">
-            </div>
-            <div class="pid-slider-group">
-                <div class="pid-label">
-                    <label>Kd (Derivative):</label>
-                    <span class="pid-value">0.100</span>
-                </div>
-                <input type="range" min="0" max="1" value="0.1" step="0.001" class="pid-slider">
-            </div>
-        </div>
-    </div>
-</div>
+        <div class="sensor-grid">
 
-<div class="action-footer">
-    <button class="btn btn-primary"><i class="fas fa-check-circle"></i> Apply PID Settings</button>
-    <button class="btn"><i class="fas fa-history"></i> Revert to Defaults</button>
+            <div class="sensor-card">
+                <i class="fas fa-sync-alt"></i>
+                <p>Roll (X)</p>
+                <h2 id="rollSensor">-1.16°</h2>
+                <span>Gyroscope</span>
+            </div>
+
+            <div class="sensor-card">
+                <i class="fas fa-sync-alt"></i>
+                <p>Pitch (Y)</p>
+                <h2 id="pitchSensor">3.16°</h2>
+                <span>Gyroscope</span>
+            </div>
+
+            <div class="sensor-card">
+                <i class="fas fa-sync-alt"></i>
+                <p>Yaw (Z)</p>
+                <h2 id="yawSensor">-1.53°</h2>
+                <span>Gyroscope</span>
+            </div>
+
+            <div class="sensor-card">
+                <i class="fas fa-water"></i>
+                <p>Depth</p>
+                <h2 id="depthSensor">15.38m</h2>
+                <span>Pressure Sensor</span>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ================= DEPTH CONTROL ================= -->
+    <section class="control-section">
+        <div class="section-header">
+            <h3>
+                <i class="fas fa-bullseye"></i>
+                Depth Target Control
+            </h3>
+
+            <button class="btn btn-primary">
+                Hold Depth
+            </button>
+        </div>
+
+        <div class="depth-control-wrapper">
+
+            <div class="depth-input-box">
+                <label>Target Depth</label>
+                <input type="number" id="target-depth" value="15">
+                <span>meters</span>
+            </div>
+
+            <div class="depth-progress-box">
+                <p>Current Depth Stability</p>
+
+                <div class="progress-bar">
+                    <div class="progress depth-progress" style="width:78%"></div>
+                </div>
+
+                <span>Stable at 15.38m</span>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ================= LIVE CHART ================= -->
+    <section class="control-section">
+        <div class="section-header">
+            <h3>
+                <i class="fas fa-chart-line"></i>
+                Live Sensor Graph
+            </h3>
+
+            <div class="button-group">
+                <button class="btn active">Gyro</button>
+                <button class="btn">Depth</button>
+            </div>
+        </div>
+
+        <div class="sensor-chart-placeholder">
+            <i class="fas fa-chart-area"></i>
+            <p>Realtime chart integration (Chart.js / WebSocket ready)</p>
+        </div>
+    </section>
+
+
+    <!-- ================= PID TUNING ================= -->
+    <section class="control-section">
+        <div class="section-header">
+            <h3>
+                <i class="fas fa-sliders-h"></i>
+                PID Tuning Configuration
+            </h3>
+
+            <select class="pid-axis-dropdown">
+                <option>Roll Axis</option>
+                <option>Pitch Axis</option>
+                <option>Yaw Axis</option>
+                <option>Depth Axis</option>
+            </select>
+        </div>
+
+        <div class="pid-grid">
+
+            <!-- KP -->
+            <div class="pid-control-card">
+                <div class="pid-header">
+                    <h4>Kp</h4>
+                    <span class="pid-value">1.250</span>
+                </div>
+
+                <input 
+                    type="range" 
+                    min="0" 
+                    max="10" 
+                    step="0.01" 
+                    value="1.25"
+                    class="pid-slider"
+                >
+                <p>Controls response speed</p>
+            </div>
+
+            <!-- KI -->
+            <div class="pid-control-card">
+                <div class="pid-header">
+                    <h4>Ki</h4>
+                    <span class="pid-value">0.450</span>
+                </div>
+
+                <input 
+                    type="range" 
+                    min="0" 
+                    max="5" 
+                    step="0.01" 
+                    value="0.45"
+                    class="pid-slider"
+                >
+                <p>Removes steady-state error</p>
+            </div>
+
+            <!-- KD -->
+            <div class="pid-control-card">
+                <div class="pid-header">
+                    <h4>Kd</h4>
+                    <span class="pid-value">0.120</span>
+                </div>
+
+                <input 
+                    type="range" 
+                    min="0" 
+                    max="5" 
+                    step="0.01" 
+                    value="0.12"
+                    class="pid-slider"
+                >
+                <p>Reduces overshoot</p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ================= ACTION BUTTON ================= -->
+    <section class="control-section">
+        <div class="section-header">
+            <h3>
+                <i class="fas fa-cogs"></i>
+                PID Actions
+            </h3>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Apply Settings
+            </button>
+
+            <button class="btn btn-secondary">
+                <i class="fas fa-undo"></i>
+                Reset Default
+            </button>
+
+            <button class="btn">
+                <i class="fas fa-download"></i>
+                Export Config
+            </button>
+        </div>
+    </section>
+
 </div>
