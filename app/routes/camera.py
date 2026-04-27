@@ -7,7 +7,7 @@ router = APIRouter(prefix="/camera")
 
 
 def generate_frames():
-    cap = cv2.VideoCapture(9)
+    cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
         print("❌ Kamera gagal dibuka")

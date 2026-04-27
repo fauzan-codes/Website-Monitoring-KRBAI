@@ -34,80 +34,78 @@ def dashboard(request: Request):
 
 
 @app.get("/thruster-control")
-def camera_page(request: Request):
+def thruster_page(request: Request):
     return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
+        request=request,
+        name="index.html",
+        context={
             "page": "pages/thrustercontrol.html"
         }
     )
 
 
-# @app.get("/mission-planner")
-# def data_page(request: Request):
-#     return templates.TemplateResponse(
-#         "index.html",
-#         {
-#             "request": request,
-#             "page": "pages/missionplaner.html"
-#         }
-#     )
+@app.get("/mission-planner")
+def thruster_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "page": "pages/missionplaner.html"
+        }
+    )
 
 
-# @app.get("/sensor")
-# def settings_page(request: Request):
-#     return templates.TemplateResponse(
-#         "index.html",
-#         {
-#             "request": request,
-#             "page": "pages/sensorpid.html"
-#         }
-#     )
+@app.get("/sensor")
+def thruster_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "page": "pages/sensorpid.html"
+        }
+    )
 
 
-# @app.get("/camera-settings")
-# def settings_page(request: Request):
-#     return templates.TemplateResponse(
-#         "index.html",
-#         {
-#             "request": request,
-#             "page": "pages/camerasettings.html"
-#         }
-#     )
+@app.get("/camera-settings")
+def thruster_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "page": "pages/camerasettings.html"
+        }
+    )
 
 
-# @app.get("/connection")
-# def settings_page(request: Request):
-#     return templates.TemplateResponse(
-#         "index.html",
-#         {
-#             "request": request,
-#             "page": "pages/connection.html"
-#         }
-#     )
+@app.get("/connection")
+def thruster_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "page": "pages/connection.html"
+        }
+    )
 
 
-
-# @app.get("/data-logging")
-# def settings_page(request: Request):
-#     return templates.TemplateResponse(
-#         "index.html",
-#         {
-#             "request": request,
-#             "page": "pages/datalogging.html"
-#         }
-#     )
-
+@app.get("/data-logging")
+def thruster_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "page": "pages/datalogging.html"
+        }
+    )
 
 
-# @app.get("/system-setting")
-# def settings_page(request: Request):
-#     return templates.TemplateResponse(
-#         "index.html",
-#         {
-#             "request": request,
-#             "page": "pages/systemsetting.html"
-#         }
-#     )
+@app.get("/system-setting")
+def thruster_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "page": "pages/systemsettings.html"
+        }
+    )
     

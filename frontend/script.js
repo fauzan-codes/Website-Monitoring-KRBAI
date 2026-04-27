@@ -50,15 +50,30 @@ function initSidebarToggle() {
 }
 
 
+function setActiveSidebar() {
+    const path = window.location.pathname;
+
+    document.querySelectorAll(".sidebar-menu li").forEach(li => {
+        li.classList.remove("active");
+    });
+
+    document.querySelectorAll(".sidebar-menu a").forEach(a => {
+        if (a.getAttribute("href") === path) {
+            a.parentElement.classList.add("active");
+        }
+    });
+}
 
 
 
 
-// ===== DASHBOARD =====
+
+
+// ==================== DASHBOARD ====================
 function initDashboard() {
     const baseURL = `${window.location.origin}/camera/stream`;
 
-    initCamera({
+    Camera({
         imgId: "front-camera",
         placeholderId: "front-placeholder",
         toggleId: "front-toggle",
@@ -66,7 +81,7 @@ function initDashboard() {
         url: baseURL
     });
 
-    initCamera({
+    Camera({
         imgId: "bottom-camera",
         placeholderId: "bottom-placeholder",
         toggleId: "bottom-toggle",
@@ -74,11 +89,11 @@ function initDashboard() {
         url: null
     });
 
-    initTelemetry();
-    initMissionTimer();
+    telemetry();
+    timer();
 }
 
-// ===== ThrusterControl =====
+// ==================== ThrusterControl ====================
 function initThrusterControl() {
     const sliders = document.querySelectorAll(".motor-slider");
 
@@ -96,8 +111,8 @@ function initThrusterControl() {
 }
 
 
-// ===== Camera =====
-function initCamera({ imgId, placeholderId, toggleId, badgeId, url }) {
+// ==================== Camera ====================
+function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
     const img = document.getElementById(imgId);
     const placeholder = document.getElementById(placeholderId);
     const toggle = document.getElementById(toggleId);
@@ -212,9 +227,9 @@ function initCamera({ imgId, placeholderId, toggleId, badgeId, url }) {
 }
 
 
-// ===== Telemetry =====
+// ==================== Telemetry ====================
 let reconnectCount = 0;
-function initTelemetry() {
+function telemetry() {
     if (
         telemetrySocket &&
         (
@@ -269,7 +284,7 @@ function initTelemetry() {
             reconnectCount++;
 
             setTimeout(() => {
-                initTelemetry();
+                telemetry();
             }, 2000);
         }
     };
@@ -282,7 +297,7 @@ function initTelemetry() {
 
 
 
-// ===== update data dashboard =====
+// ==================== update data dashboard ====================
 function updateText(selector, value) {
     const element = document.querySelector(selector);
 
@@ -341,8 +356,8 @@ function updateActiveThrusters() {
 }
 
 
-// ===== timer mision =====
-function initMissionTimer() {
+// ==================== timer mision ====================
+function timer() {
     const startBtn = document.getElementById("btn-start");
     const stopBtn = document.getElementById("btn-stop");
     const resetBtn = document.getElementById("btn-reset");
@@ -401,20 +416,7 @@ function initMissionTimer() {
 }
 
 
-// ===== page active =====
-function setActiveSidebar() {
-    const path = window.location.pathname;
 
-    document.querySelectorAll(".sidebar-menu li").forEach(li => {
-        li.classList.remove("active");
-    });
-
-    document.querySelectorAll(".sidebar-menu a").forEach(a => {
-        if (a.getAttribute("href") === path) {
-            a.parentElement.classList.add("active");
-        }
-    });
-}
 
 
 
