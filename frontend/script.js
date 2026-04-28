@@ -3,6 +3,7 @@ let telemetrySocket = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Page loaded");
+    setSystemStatus(true);
 
     const path = window.location.pathname;
 
@@ -16,6 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initSidebarToggle();
     setActiveSidebar();
+
+    window.addEventListener("resize", () => {
+        const isCurrentlyOnline =
+            document.getElementById("system-status")
+            ?.classList.contains("online");
+
+        setSystemStatus(isCurrentlyOnline);
+    });
 });
 
 
@@ -49,7 +58,6 @@ function initSidebarToggle() {
     });
 }
 
-
 function setActiveSidebar() {
     const path = window.location.pathname;
 
@@ -62,6 +70,32 @@ function setActiveSidebar() {
             a.parentElement.classList.add("active");
         }
     });
+}
+
+function setSystemStatus(isOnline) {
+    const indicator = document.getElementById("system-status");
+    const text = document.getElementById("status-text");
+
+    if (!indicator || !text) return;
+
+    const isMobile = window.innerWidth <= 900;
+
+    if (isOnline) {
+        indicator.classList.remove("offline");
+        indicator.classList.add("online");
+
+        text.textContent = isMobile
+            ? "Online"
+            : "System Online";
+
+    } else {
+        indicator.classList.remove("online");
+        indicator.classList.add("offline");
+
+        text.textContent = isMobile
+            ? "Offline"
+            : "System Offline";
+    }
 }
 
 
@@ -252,6 +286,8 @@ function telemetry() {
     telemetrySocket.onopen = () => {
         console.log("Telemetry connected");
         reconnectCount = 0;
+
+        setSystemStatus(true);
     };
 
     telemetrySocket.onmessage = (event) => {
@@ -279,6 +315,7 @@ function telemetry() {
 
     telemetrySocket.onclose = () => {
         console.log("Telemetry closed");
+        setSystemStatus(false);
 
         if (reconnectCount < 10) {
             reconnectCount++;
@@ -291,6 +328,7 @@ function telemetry() {
 
     telemetrySocket.onerror = () => {
         console.log("WebSocket error");
+        setSystemStatus(false);
     };
 }
 
@@ -363,56 +401,71 @@ function timer() {
     const resetBtn = document.getElementById("btn-reset");
     const display = document.getElementById("time-display");
 
-    if (!startBtn || !stopBtn || !resetBtn) return;
+    if (!startBtn || !stopBtn || !resetBtn || !display) return;
 
-    let sec = 0;
-    let interval = null;
-
-    function updateDisplay() {
+    function formatTime(sec) {
         const h = String(Math.floor(sec / 3600)).padStart(2, "0");
         const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
         const s = String(sec % 60).padStart(2, "0");
 
-        display.textContent = `${h}:${m}:${s}`;
+        return `${h}:${m}:${s}`;
     }
 
-    // start
+    async function loadStatus() {
+        try {
+            const res = await fetch("/mission/status");
+            const data = await res.json();
+
+            display.textContent = formatTime(data.elapsed);
+
+            if (data.is_running) {
+                startBtn.style.display = "none";
+                stopBtn.style.display = "block";
+                resetBtn.style.display = "none";
+            } else {
+                if (data.elapsed > 0) {
+                    startBtn.style.display = "none";
+                    stopBtn.style.display = "none";
+                    resetBtn.style.display = "block";
+                } else {
+                    startBtn.style.display = "block";
+                    stopBtn.style.display = "none";
+                    resetBtn.style.display = "none";
+                }
+            }
+        } catch (err) {
+            console.log("Timer status error:", err);
+        }
+    }
+
+    async function sendAction(url) {
+        try {
+            await fetch(url, {
+                method: "POST"
+            })
+
+            loadStatus()
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     startBtn.addEventListener("click", () => {
-        if (interval) return; 
+        sendAction("/mission/start")
+    })
 
-        startBtn.style.display = "none";
-        stopBtn.style.display = "block";
-        resetBtn.style.display = "none";
-
-        interval = setInterval(() => {
-            sec++;
-            updateDisplay();
-        }, 1000);
-    });
-
-    // stop/pause
     stopBtn.addEventListener("click", () => {
-        clearInterval(interval);
+        sendAction("/mission/stop")
+    })
 
-        startBtn.style.display = "none";
-        stopBtn.style.display = "none";
-        resetBtn.style.display = "block";
-
-        interval = null;
-    });
-
-    // reset
     resetBtn.addEventListener("click", () => {
-        clearInterval(interval);
+        sendAction("/mission/reset")
+    })
 
-        startBtn.style.display = "block";
-        stopBtn.style.display = "none";
-        resetBtn.style.display = "none";
+    // polling backend tiap 1 detik
+    setInterval(loadStatus, 1000)
 
-        interval = null;
-        sec = 0;
-        updateDisplay();
-    });
+    loadStatus()
 }
 
 

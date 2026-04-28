@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from app.routes import camera
 from app.routes import telemetry
 from app.routes import control
+from app.routes import mission_timer
 
 
 
@@ -21,6 +22,7 @@ app.mount("/static", StaticFiles(directory="frontend"), name="static")
 app.include_router(camera.router)
 app.include_router(telemetry.router)
 app.include_router(control.router)
+app.include_router(mission_timer.router)
 
 @app.get("/")
 def dashboard(request: Request):
@@ -28,7 +30,8 @@ def dashboard(request: Request):
         request=request,
         name="index.html",
         context={
-            "page": "pages/dashboard.html"
+            "page": "pages/dashboard.html",
+            "page_title": "Dashboard Monitoring"
         }
     )
 
@@ -39,7 +42,8 @@ def thruster_page(request: Request):
         request=request,
         name="index.html",
         context={
-            "page": "pages/thrustercontrol.html"
+            "page": "pages/thrustercontrol.html",
+            "page_title": "Thruster Control"
         }
     )
 
@@ -50,7 +54,8 @@ def thruster_page(request: Request):
         request=request,
         name="index.html",
         context={
-            "page": "pages/missionplaner.html"
+            "page": "pages/missionplaner.html",
+            "page_title": "Mission Planner"
         }
     )
 
@@ -61,7 +66,8 @@ def thruster_page(request: Request):
         request=request,
         name="index.html",
         context={
-            "page": "pages/sensorpid.html"
+            "page": "pages/sensorpid.html",
+            "page_title": "Sensor & PID Tunning"
         }
     )
 
@@ -72,7 +78,8 @@ def thruster_page(request: Request):
         request=request,
         name="index.html",
         context={
-            "page": "pages/camerasettings.html"
+            "page": "pages/camerasettings.html",
+            "page_title": "Camera Settings"
         }
     )
 
@@ -83,7 +90,8 @@ def thruster_page(request: Request):
         request=request,
         name="index.html",
         context={
-            "page": "pages/connection.html"
+            "page": "pages/connection.html",
+            "page_title": "Connections"
         }
     )
 
@@ -94,7 +102,8 @@ def thruster_page(request: Request):
         request=request,
         name="index.html",
         context={
-            "page": "pages/datalogging.html"
+            "page": "pages/datalogging.html",
+            "page_title": "Data Logging"
         }
     )
 
@@ -105,7 +114,8 @@ def thruster_page(request: Request):
         request=request,
         name="index.html",
         context={
-            "page": "pages/systemsettings.html"
+            "page": "pages/systemsettings.html",
+            "page_title": "System Settings"
         }
     )
     
