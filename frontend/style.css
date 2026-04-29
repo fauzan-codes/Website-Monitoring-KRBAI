@@ -485,19 +485,44 @@ body {
 
 
 /* ===== reset button ===== */
-.reset-btn {
-    background-color: var(--border-color); 
-    border: none; color: var(--text-primary); 
-    padding: 0.5rem 1rem; 
-    border-radius: 0.5rem; 
-    cursor: pointer; 
-    font-family: 'Poppins', sans-serif; 
-    font-size: 0.9rem; 
-    transition: background-color 0.3s;
-}
-.reset-btn:hover { background-color: #3c4656; }
+.orientation-btn {
+    background-color: var(--border-color);
+    border: none;
+    color: var(--text-primary);
 
-.reset-btn i { 
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+
+    transition: background-color 0.3s;
+    width: 8.5rem;
+    min-width: 8.5rem;
+    height: 2.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    flex-shrink: 0;
+}
+.orientation-btn:hover { 
+    background-color: #3c4656; 
+}
+
+.orientation-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.orientation-btn:disabled:hover {
+    background-color: var(--border-color);
+}
+
+.orientation-btn i { 
     margin-right: 0.6rem; 
 }
 

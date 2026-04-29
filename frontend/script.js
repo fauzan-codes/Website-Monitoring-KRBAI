@@ -124,6 +124,7 @@ function initDashboard() {
     });
 
     setupCameraActions();
+    setupOrientationReset();
     telemetry();
     timer();
 }
@@ -656,6 +657,47 @@ function timer() {
     loadStatus()
 }
 
+
+// ==================== Orientation Reset ====================
+function setupOrientationReset() {
+    const resetBtn = document.getElementById("orientation-reset-btn");
+
+    if (!resetBtn) return;
+
+    let cooldown = false;
+
+    resetBtn.addEventListener("click", async () => {
+        if (cooldown) return;
+
+        cooldown = true;
+        resetBtn.disabled = true;
+
+        const originalHTML = resetBtn.innerHTML;
+
+        resetBtn.innerHTML = `
+            <i class="fas fa-spinner fa-spin"></i> Resetting...
+        `;
+
+        try {
+            const res = await fetch("/orientation/reset", {
+                method: "POST"
+            });
+
+            const data = await res.json();
+
+            console.log(data.message);
+
+        } catch (err) {
+            console.log("Orientation reset error:", err);
+        }
+
+        setTimeout(() => {
+            resetBtn.disabled = false;
+            resetBtn.innerHTML = originalHTML;
+            cooldown = false;
+        }, 2000);
+    });
+}
 
 
 

@@ -7,6 +7,7 @@ from app.routes import camera
 from app.routes import telemetry
 from app.routes import control
 from app.routes import mission_timer
+from app.routes import orientation
 
 
 
@@ -23,6 +24,7 @@ app.include_router(camera.router)
 app.include_router(telemetry.router)
 app.include_router(control.router)
 app.include_router(mission_timer.router)
+app.include_router(orientation.router)
 
 @app.get("/")
 def dashboard(request: Request):
