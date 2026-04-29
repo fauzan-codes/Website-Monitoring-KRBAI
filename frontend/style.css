@@ -255,8 +255,8 @@ body {
 
 /* border status, bukan live */
 .status-move {
-    padding: 5px 12px;
-    border-radius: 15px;
+    padding: 0.4rem 0.7rem;
+    border-radius: 1rem;
     font-size: 0.8rem;
     font-weight: 600;
 }
@@ -294,15 +294,48 @@ body {
 }
 
 .camera-controls .btn-icon {
-    background: none;
-    border: none;
+    width: 2.6rem;
+    height: 2.6rem;
+    min-width: 2.6rem;
+    min-height: 2.6rem;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
     color: var(--text-secondary);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
-    padding: 0.4rem;
-    transition: color 0.3s;
+    border-radius: 0.6rem;
+    transition: all 0.3s ease;
 }
-.camera-controls .btn-icon:hover { color: var(--accent-primary); }
+.camera-controls .btn-icon:hover { 
+    background: rgba(255,255,255,0.05);
+    color: var(--accent-primary); 
+}
+
+.camera-controls .btn-icon:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+    background: transparent;
+    color: #5f6775;
+}
+
+.camera-controls .btn-icon:not(:disabled):hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--accent-primary);
+}
+
+.camera-controls .btn-icon.recording-active {
+    background: rgba(255, 77, 79, 0.15);
+    color: var(--accent-red);
+}
+
+.camera-controls .btn-icon.recording-active:hover {
+    color: #ff6b6b;
+}
 
 
 /* ===== switch button ===== */
@@ -547,6 +580,31 @@ body {
         font-size: 1.7rem;
     }
 
+    .camera-controls {
+        gap: 0.5rem;
+    }
+
+    .camera-controls .btn-icon {
+        width: 2rem;
+        height: 2rem;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
+    }
+
+
+    .camera-controls .switch {
+        width: 34px;
+        height: 20px;
+    }
+
+    .camera-controls .switch .slider::before {
+        width: 14px;
+        height: 14px;
+    }
+
+    .camera-controls .switch input:checked + .slider::before {
+        transform: translateX(14px);
+    }
 }
 
 
@@ -559,6 +617,32 @@ body {
 
     .widget-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .camera-controls {
+        gap: 0.7rem;
+    }
+
+    .camera-controls .btn-icon {
+        width: 2rem;
+        height: 2rem;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
+    }
+
+    .camera-controls .switch {
+        width: 32px;
+        height: 18px;
+    }
+
+    .camera-controls .switch .slider::before {
+        width: 12px;
+        height: 12px;
+    }
+
+    .camera-controls .switch input:checked + .slider::before {
+        transform: translateX(14px);
     }
 
 
@@ -636,6 +720,33 @@ body {
 @media (max-width: 500px) {
     html{
         font-size: 70%;
+    }
+
+    .camera-controls {
+        gap: 0.5rem;
+    }
+
+    .camera-controls .btn-icon {
+        width: 2rem;
+        height: 2rem;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
+    }
+
+    .camera-controls .switch {
+        width: 28px;
+        height: 16px;
+    }
+
+    .camera-controls .switch .slider::before {
+        width: 10px;
+        height: 10px;
+        top: 3px;
+        left: 3px;
+    }
+
+    .camera-controls .switch input:checked + .slider::before {
+        transform: translateX(12px);
     }
 }
 

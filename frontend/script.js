@@ -123,6 +123,7 @@ function initDashboard() {
         url: null
     });
 
+    setupCameraActions();
     telemetry();
     timer();
 }
@@ -244,6 +245,7 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
         img.onload = () => {
             clearTimeout(timeoutId);
             isLoading = false;
+            console.log("camera online")
             setLiveUI();
         };
 
@@ -258,6 +260,192 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
 
     setOfflineUI();
     toggle.checked = false;
+}
+
+
+function setupCameraActions() {
+    setupSingleCameraActions({
+        screenshotBtnId: "front-screenshot-btn",
+        recordBtnId: "front-record-btn",
+        toggleId: "front-toggle",
+
+        screenshotEndpoint: "/camera/screenshot",
+        recordStartEndpoint: "/camera/record/start",
+        recordStopEndpoint: "/camera/record/stop"
+    });
+
+    // bottom camera UI behavior sama seperti front
+    // backend belum ada → sementara pakai alert dummy
+    setupSingleCameraActions({
+        screenshotBtnId: "bottom-screenshot-btn",
+        recordBtnId: "bottom-record-btn",
+        toggleId: "bottom-toggle",
+
+        screenshotEndpoint: null,
+        recordStartEndpoint: null,
+        recordStopEndpoint: null
+    });
+}
+
+
+/* reusable camera action */
+function setupSingleCameraActions({
+    screenshotBtnId,
+    recordBtnId,
+    toggleId,
+    screenshotEndpoint,
+    recordStartEndpoint,
+    recordStopEndpoint
+}) {
+    const screenshotBtn = document.getElementById(screenshotBtnId);
+    const recordBtn = document.getElementById(recordBtnId);
+    const toggle = document.getElementById(toggleId);
+
+    if (!screenshotBtn || !recordBtn || !toggle) return;
+
+    let isRecording = false;
+    let recordCooldown = false;
+
+    function cameraIsOff() {
+        return !toggle.checked;
+    }
+
+    function updateActionButtons() {
+        const disabled = cameraIsOff();
+
+        screenshotBtn.disabled = disabled;
+        recordBtn.disabled = disabled;
+
+        if (disabled && isRecording) {
+            isRecording = false;
+            updateRecordUI();
+        }
+    }
+
+    function updateRecordUI() {
+        if (isRecording) {
+            recordBtn.innerHTML = `
+                <i class="fas fa-stop"></i>
+            `;
+
+            recordBtn.classList.add("recording-active");
+            recordBtn.title = "Stop Recording";
+        } else {
+            recordBtn.innerHTML = `
+                <i class="fas fa-video"></i>
+            `;
+
+            recordBtn.classList.remove("recording-active");
+            recordBtn.title = "Start Recording";
+        }
+    }
+
+    async function safeStopRecording() {
+        if (!recordStopEndpoint) {
+            isRecording = false;
+            updateRecordUI();
+            return;
+        }
+
+        try {
+            const res = await fetch(recordStopEndpoint, {
+                method: "POST"
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                isRecording = false;
+                updateRecordUI();
+            }
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    // screenshot
+    screenshotBtn.addEventListener("click", async () => {
+        if (cameraIsOff()) return;
+
+        // bottom camera belum backend!!!!!!!!!!!!!!!!!!!!
+        if (!screenshotEndpoint) {
+            console.log("Bottom camera screenshot backend not available yet");
+            return;
+        }
+
+        try {
+            const res = await fetch(screenshotEndpoint, {
+                method: "POST"
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    // record
+    recordBtn.addEventListener("click", async () => {
+        if (cameraIsOff()) return;
+        if (recordCooldown) return;
+
+        recordCooldown = true;
+        recordBtn.disabled = true;
+
+        setTimeout(() => {
+            recordCooldown = false;
+            updateActionButtons();
+        }, 1000);
+
+        // bottom camera backend belum ada!!!!!!!!!!!!!!!!!!!!
+        if (!recordStartEndpoint || !recordStopEndpoint) {
+            isRecording = !isRecording;
+            updateRecordUI();
+
+            console.log(
+                isRecording
+                    ? "Bottom camera recording started (UI only)"
+                    : "Bottom camera recording stopped (UI only)"
+            );
+            return;
+        }
+
+        try {
+            const endpoint = isRecording
+                ? recordStopEndpoint
+                : recordStartEndpoint;
+
+            const res = await fetch(endpoint, {
+                method: "POST"
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                isRecording = !isRecording;
+                updateRecordUI();
+            }
+
+            console.log(data.message);
+
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    toggle.addEventListener("change", async () => {
+        if (!toggle.checked && isRecording) {
+            await safeStopRecording();
+        }
+
+        updateActionButtons();
+    });
+
+    updateRecordUI();
+    updateActionButtons();
 }
 
 
