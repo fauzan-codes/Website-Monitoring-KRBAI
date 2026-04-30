@@ -8,6 +8,8 @@ from app.routes import telemetry
 from app.routes import control
 from app.routes import mission_timer
 from app.routes import orientation
+from app.database.db import Base, engine
+from app.database import models
 
 
 
@@ -25,6 +27,8 @@ app.include_router(telemetry.router)
 app.include_router(control.router)
 app.include_router(mission_timer.router)
 app.include_router(orientation.router)
+
+Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def dashboard(request: Request):

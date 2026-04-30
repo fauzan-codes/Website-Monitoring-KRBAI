@@ -1,6 +1,10 @@
 // frontend/script.js
 let telemetrySocket = null;
 
+let reconnectCount = 0;
+
+let currentControlMode = "keyboard";
+
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Page loaded");
     setSystemStatus(true);
@@ -58,16 +62,31 @@ function initSidebarToggle() {
     });
 }
 
+// function setActiveSidebar() {
+//     const path = window.location.pathname;
+
+//     document.querySelectorAll(".sidebar-menu li").forEach(li => {
+//         li.classList.remove("active");
+//     });
+
+//     document.querySelectorAll(".sidebar-menu a").forEach(a => {
+//         if (a.getAttribute("href") === path) {
+//             a.parentElement.classList.add("active");
+//         }
+//     });
+// }
 function setActiveSidebar() {
-    const path = window.location.pathname;
+    let currentPath = window.location.pathname.replace(/\/$/, "") || "/";
 
     document.querySelectorAll(".sidebar-menu li").forEach(li => {
         li.classList.remove("active");
     });
 
-    document.querySelectorAll(".sidebar-menu a").forEach(a => {
-        if (a.getAttribute("href") === path) {
-            a.parentElement.classList.add("active");
+    document.querySelectorAll(".sidebar-menu a").forEach(link => {
+        let linkPath = link.getAttribute("href").replace(/\/$/, "") || "/";
+
+        if (currentPath === linkPath) {
+            link.parentElement.classList.add("active");
         }
     });
 }
@@ -133,15 +152,15 @@ function initDashboard() {
 function initThrusterControl() {
     const sliders = document.querySelectorAll(".motor-slider");
 
-    sliders.forEach(slider => {
-        const valueText = slider
-            .closest(".slider-container")
-            .querySelector(".motor-value");
+    setupModeSwitch();
+    setupKeyboardControl();
+    setupGamepadControl();
+    setupVirtualJoystick();
+    setupMotorSlider();
+    setupEmergencyStop();
 
-        slider.addEventListener("input", () => {
-            valueText.textContent = `${slider.value}%`;
-        });
-    });
+    loadThrusterConfig();
+
 
     console.log("Thruster control initialized");
 }
@@ -381,7 +400,7 @@ function setupSingleCameraActions({
             });
 
             const data = await res.json();
-            alert(data.message);
+            console.log(data.message);
 
         } catch (err) {
             console.log(err);
@@ -451,7 +470,6 @@ function setupSingleCameraActions({
 
 
 // ==================== Telemetry ====================
-let reconnectCount = 0;
 function telemetry() {
     if (
         telemetrySocket &&
@@ -704,3 +722,387 @@ function setupOrientationReset() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let lastCommand = null;
+let lastSentTime = 0;
+
+let joystickInterval = null;
+let joystickCommand = "STOP";
+
+function sendThrusterCommand(command, value = null) {
+    const now = Date.now();
+
+    if (
+        command === lastCommand &&
+        now - lastSentTime < 100
+    ) {
+        return;
+    }
+
+    lastCommand = command;
+    lastSentTime = now;
+
+    fetch("/control/command", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            action: command,
+            value: value
+        })
+    })
+    .catch(err => console.log(err));
+}
+
+
+
+function setupModeSwitch() {
+    const buttons = document.querySelectorAll(".mode-btn");
+    const panels = document.querySelectorAll(".control-panel");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            buttons.forEach(b => b.classList.remove("active"));
+            panels.forEach(p => p.classList.remove("active-panel"));
+
+            btn.classList.add("active");
+
+            const mode = btn.dataset.mode;
+
+            currentControlMode = mode;
+            sendThrusterCommand("STOP");
+
+            document
+                .getElementById(`${mode}-panel`)
+                .classList.add("active-panel");
+        });
+    });
+}
+
+
+
+
+function setupKeyboardControl() {
+    const map = {
+        w: "FORWARD",
+        a: "LEFT",
+        s: "BACKWARD",
+        d: "RIGHT",
+        q: "UP",
+        e: "DOWN"
+    };
+
+    let activeKey = null;
+
+    document.addEventListener("keydown", (e) => {
+        if (currentControlMode !== "keyboard") return;
+
+        const key = e.key.toLowerCase();
+        const cmd = map[key];
+
+        if (!cmd) return;
+
+        // ❗ kalau masih tombol yang sama → ignore
+        if (activeKey === key) return;
+
+        activeKey = key;
+
+        console.log(`Sending command: ${cmd}`);
+        sendThrusterCommand(cmd);
+    });
+
+
+    document.addEventListener("keyup", (e) => {
+        if (currentControlMode !== "keyboard") return;
+
+        const key = e.key.toLowerCase();
+
+        if (key === activeKey) {
+            activeKey = null;
+
+            console.log("Sending command: STOP");
+            sendThrusterCommand("STOP");
+        }
+    });
+
+    document.querySelectorAll("#keyboard-panel .control-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            if (currentControlMode !== "keyboard") return;
+
+            const cmd = btn.dataset.command;
+            console.log(`Sending command: ${cmd}`);
+
+            sendThrusterCommand(btn.dataset.command);
+        });
+    });
+}
+
+
+
+function setupGamepadControl() {
+    window.addEventListener("gamepadconnected", () => {
+        const status = document.getElementById("gamepad-status");
+        status.className = "gamepad-status connected";
+        status.innerHTML = `
+            <i class="fas fa-circle"></i> Gamepad Connected
+        `;
+    });
+
+    window.addEventListener("gamepaddisconnected", () => {
+        const status = document.getElementById("gamepad-status");
+        status.className = "gamepad-status disconnected";
+        status.innerHTML = `
+            <i class="fas fa-circle"></i> No Gamepad
+        `;
+    });
+
+    setInterval(() => {
+        const gamepad = navigator.getGamepads()[0];
+        if (!gamepad) return;
+
+        const lx = gamepad.axes[0];
+        const ly = gamepad.axes[1];
+
+        if (ly < -0.5) sendThrusterCommand("FORWARD");
+        else if (ly > 0.5) sendThrusterCommand("BACKWARD");
+    }, 150);
+}
+
+
+function setupVirtualJoystick() {
+    const stick = document.getElementById("joystick-stick");
+    const base = document.getElementById("joystick-base");
+
+    if (!stick || !base) return;
+
+    let dragging = false;
+    const maxDistance = 65;
+
+    function getCommand(x, y) {
+        const deadzone = 20;
+
+        if (y < -deadzone) return "FORWARD";
+        if (y > deadzone) return "BACKWARD";
+        if (x < -deadzone) return "LEFT";
+        if (x > deadzone) return "RIGHT";
+
+        return "STOP";
+    }
+
+    function moveJoystick(clientX, clientY) {
+        if (currentControlMode !== "joystick") return;
+
+        const rect = base.getBoundingClientRect();
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        let x = clientX - rect.left - centerX;
+        let y = clientY - rect.top - centerY;
+
+        const distance = Math.sqrt(x * x + y * y);
+
+        if (distance > maxDistance) {
+            const angle = Math.atan2(y, x);
+            x = Math.cos(angle) * maxDistance;
+            y = Math.sin(angle) * maxDistance;
+        }
+
+        stick.style.left = `${x + centerX}px`;
+        stick.style.top = `${y + centerY}px`;
+
+        joystickCommand = getCommand(x, y);
+    }
+
+    function startSending() {
+        if (joystickInterval) return;
+
+        joystickInterval = setInterval(() => {
+            if (currentControlMode !== "joystick") return;
+
+            if (joystickCommand) {
+                console.log("JoyStick command: ", joystickCommand)
+                sendThrusterCommand(joystickCommand);
+            }
+        }, 120); 
+    }
+
+    function stopSending() {
+        clearInterval(joystickInterval);
+        joystickInterval = null;
+    }
+
+    stick.addEventListener("pointerdown", (e) => {
+        dragging = true;
+        stick.setPointerCapture(e.pointerId);
+        stick.style.cursor = "grabbing";
+
+        startSending();
+    });
+
+    stick.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        moveJoystick(e.clientX, e.clientY);
+    });
+
+    function resetJoystick() {
+        dragging = false;
+
+        stick.style.left = "50%";
+        stick.style.top = "50%";
+        stick.style.transform = "translate(-50%, -50%)";
+        stick.style.cursor = "grab";
+
+        joystickCommand = "STOP";
+
+        console.log("JoyStick command: STOP")
+        sendThrusterCommand("STOP");
+
+        stopSending();
+    }
+
+    stick.addEventListener("pointerup", resetJoystick);
+    stick.addEventListener("pointercancel", resetJoystick);
+}
+
+
+function setupMotorSlider() {
+    const sliders = document.querySelectorAll(".motor-slider");
+    const startBtn = document.getElementById("start-thruster-test");
+
+    sliders.forEach(slider => {
+        const valueText = slider
+            .closest(".motor-control")
+            .querySelector(".motor-value");
+
+        slider.addEventListener("input", () => {
+            valueText.textContent = `${slider.value}%`;
+        });
+    });
+
+    if (startBtn) {
+        startBtn.addEventListener("click", async () => {
+
+            startBtn.disabled = true;
+            startBtn.innerHTML = "Running...";
+
+            const values = {};
+
+            sliders.forEach(slider => {
+                const label = slider
+                    .closest(".motor-control")
+                    .querySelector("label")
+                    .textContent
+                    .toLowerCase()
+                    .replaceAll(" ", "_");
+
+                values[label] = parseInt(slider.value);
+            });
+
+            console.log("SEND TO BACKEND:", values);
+
+            try {
+                const res = await fetch("/control/thruster-test", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(values)
+                });
+
+                const data = await res.json();
+                console.log(data.message);
+
+            } catch (err) {
+                console.log(err);
+            }
+
+            setTimeout(() => {
+                startBtn.disabled = false;
+                startBtn.innerHTML = `
+                    <i class="fas fa-play"></i>
+                    Start Test
+                `;
+            }, 1500);
+        });
+    }
+}
+
+
+function setupEmergencyStop() {
+    const btn = document.getElementById("emergency-stop");
+
+    btn.addEventListener("click", async () => {
+        sendThrusterCommand("EMERGENCY_STOP");
+
+        // 🔥 reset UI langsung
+        const sliders = document.querySelectorAll(".motor-slider");
+
+        sliders.forEach(slider => {
+            slider.value = 0;
+
+            const valueText = slider
+                .closest(".motor-control")
+                .querySelector(".motor-value");
+
+            valueText.textContent = "0%";
+        });
+
+        // 🔥 optional: reload dari backend biar sync
+        setTimeout(() => {
+            loadThrusterConfig();
+        }, 300);
+    });
+}
+
+
+async function loadThrusterConfig() {
+    try {
+        const res = await fetch("/control/thruster-config");
+        const data = await res.json();
+
+        console.log("LOAD CONFIG:", data);
+
+        const sliders = document.querySelectorAll(".motor-slider");
+
+        sliders.forEach(slider => {
+            const label = slider
+                .closest(".motor-control")
+                .querySelector("label")
+                .textContent
+                .toLowerCase()
+                .replaceAll(" ", "_");
+
+            if (data[label] !== undefined) {
+                slider.value = data[label];
+
+                const valueText = slider
+                    .closest(".motor-control")
+                    .querySelector(".motor-value");
+
+                valueText.textContent = `${data[label]}%`;
+            }
+        });
+
+    } catch (err) {
+        console.log("Failed load config:", err);
+    }
+}
