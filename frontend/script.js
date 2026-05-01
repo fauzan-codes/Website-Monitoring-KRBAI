@@ -1,12 +1,8 @@
 // frontend/script.js
 let telemetrySocket = null;
-
 let reconnectCount = 0;
 
-let currentControlMode = "keyboard";
-
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Page loaded");
     setSystemStatus(true);
 
     const path = window.location.pathname;
@@ -32,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// ==== Side Bar System =====
+// ==================== SideBar System ====================
 function initSidebarToggle() {
     const sidebar = document.querySelector(".sidebar-icon-only");
     const logo = document.querySelector(".logo-top");
@@ -62,19 +58,6 @@ function initSidebarToggle() {
     });
 }
 
-// function setActiveSidebar() {
-//     const path = window.location.pathname;
-
-//     document.querySelectorAll(".sidebar-menu li").forEach(li => {
-//         li.classList.remove("active");
-//     });
-
-//     document.querySelectorAll(".sidebar-menu a").forEach(a => {
-//         if (a.getAttribute("href") === path) {
-//             a.parentElement.classList.add("active");
-//         }
-//     });
-// }
 function setActiveSidebar() {
     let currentPath = window.location.pathname.replace(/\/$/, "") || "/";
 
@@ -122,7 +105,7 @@ function setSystemStatus(isOnline) {
 
 
 
-// ==================== DASHBOARD ====================
+// ==================== HALAMAN DASHBOARD ====================
 function initDashboard() {
     const baseURL = `${window.location.origin}/camera/stream`;
 
@@ -146,24 +129,34 @@ function initDashboard() {
     setupOrientationReset();
     telemetry();
     timer();
+
+    console.log("Dashboard initialized");
 }
 
 // ==================== ThrusterControl ====================
 function initThrusterControl() {
     const sliders = document.querySelectorAll(".motor-slider");
 
-    setupModeSwitch();
+    ModeSwitchButton();
+
     setupKeyboardControl();
     setupGamepadControl();
     setupVirtualJoystick();
-    setupMotorSlider();
-    setupEmergencyStop();
 
+    MotorSlider();
+    EmergencyStop();
     loadThrusterConfig();
 
 
     console.log("Thruster control initialized");
 }
+
+
+
+
+
+
+
 
 
 // ==================== Camera ====================
@@ -270,8 +263,7 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
         };
 
         img.onerror = () => {
-            console.log("Camera error, Tolong cek lagi url atau kameranya");
-            console.log("URL Camera: \"", url, "\"")
+            console.log("Camera error, Tolong cek lagi url atau kameranya\nURL Camera: \"url\"");
             clearTimeout(timeoutId);
             isLoading = false;
             setErrorUI();
@@ -317,6 +309,7 @@ function setupSingleCameraActions({
     recordStartEndpoint,
     recordStopEndpoint
 }) {
+
     const screenshotBtn = document.getElementById(screenshotBtnId);
     const recordBtn = document.getElementById(recordBtnId);
     const toggle = document.getElementById(toggleId);
@@ -535,7 +528,7 @@ function telemetry() {
 
             setTimeout(() => {
                 telemetry();
-            }, 2000);
+            }, 3000);
         }
     };
 
@@ -564,7 +557,6 @@ function updateThruster(name, value) {
 
     if (!bar || !statusText || !valueText) return;
 
-    // update bar
     bar.style.width = `${value}%`;
 
     let status = "Off";
@@ -573,21 +565,19 @@ function updateThruster(name, value) {
         status = "Active";
     }
 
-    // reset class
     statusText.classList.remove("active");
 
     if (value > 0) {
         statusText.classList.add("active");
     }
 
-    // update UI
     statusText.textContent = status;
     valueText.textContent = value;
 
     updateActiveThrusters();
 }
 
-function updateActiveThrusters() {
+function updateActiveThrusters() { //thruster in dashboard
     const bars = document.querySelectorAll(".thruster-list .progress");
     let activeCount = 0;
 
@@ -675,7 +665,6 @@ function timer() {
         sendAction("/mission/reset")
     })
 
-    // polling backend tiap 1 detik
     setInterval(loadStatus, 1000)
 
     loadStatus()
@@ -729,26 +718,11 @@ function setupOrientationReset() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ==================== HALAMAN THRUSTER CONTROL ====================
 let lastCommand = null;
 let lastSentTime = 0;
 
+let currentControlMode = "keyboard";
 let joystickInterval = null;
 let joystickCommand = "STOP";
 
@@ -780,7 +754,7 @@ function sendThrusterCommand(command, value = null) {
 
 
 
-function setupModeSwitch() {
+function ModeSwitchButton() {
     const buttons = document.querySelectorAll(".mode-btn");
     const panels = document.querySelectorAll(".control-panel");
 
@@ -802,8 +776,6 @@ function setupModeSwitch() {
         });
     });
 }
-
-
 
 
 function setupKeyboardControl() {
@@ -834,7 +806,7 @@ function setupKeyboardControl() {
         });
     }
 
-    // ===== KEYBOARD PRESS =====
+    // keyboard press
     document.addEventListener("keydown", (e) => {
         if (currentControlMode !== "keyboard") return;
 
@@ -842,7 +814,6 @@ function setupKeyboardControl() {
         const cmd = map[key];
 
         if (!cmd) return;
-
         if (activeKey === key) return;
 
         activeKey = key;
@@ -858,7 +829,6 @@ function setupKeyboardControl() {
         if (currentControlMode !== "keyboard") return;
 
         const key = e.key.toLowerCase();
-
         if (key === activeKey) {
             activeKey = null;
 
@@ -869,7 +839,7 @@ function setupKeyboardControl() {
         }
     });
 
-    // ===== CLICK MOUSE =====
+    // click mouse
     buttons.forEach(btn => {
         btn.addEventListener("mousedown", () => {
             if (currentControlMode !== "keyboard") return;
@@ -883,7 +853,6 @@ function setupKeyboardControl() {
 
         btn.addEventListener("mouseup", () => {
             if (currentControlMode !== "keyboard") return;
-
             btn.classList.remove("active-press");
 
             console.log("Send : STOP")
@@ -895,7 +864,6 @@ function setupKeyboardControl() {
         });
     });
 }
-
 
 
 function setupGamepadControl() {
@@ -1025,7 +993,7 @@ function setupVirtualJoystick() {
 }
 
 
-function setupMotorSlider() {
+function MotorSlider() {
     const sliders = document.querySelectorAll(".motor-slider");
     const startBtn = document.getElementById("start-thruster-test");
 
@@ -1092,7 +1060,7 @@ function setupMotorSlider() {
 }
 
 
-function setupEmergencyStop() {
+function EmergencyStop() {
     const btn = document.getElementById("emergency-stop");
 
     btn.addEventListener("click", async () => {
@@ -1163,3 +1131,100 @@ async function loadThrusterConfig() {
         console.log("Failed load config:", err);
     }
 }
+
+
+
+
+
+
+
+// ==================== HALAMAN MISSION PLANNER ====================
+// ==================== HALAMAN SENSOR & PID TUNNING ====================
+
+
+
+// ==================== HALAMAN CAMERA SETTINGS ====================
+function sendCameraSettingsCommand(command, value = null) {
+    const now = Date.now();
+
+    if (
+        command === lastCommand &&
+        now - lastSentTime < 100
+    ) {
+        return;
+    }
+
+    lastCommand = command;
+    lastSentTime = now;
+
+    fetch("/control/command", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            action: command,
+            value: value
+        })
+    })
+    .catch(err => console.log(err));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ==================== HALAMAN CONNECTION ====================
+// ==================== HALAMAN DATA LOGGING ====================
+// ==================== HALAMAN SYSTEM SETTINGS ====================
+
+
+
+
+
+
+
+
+
