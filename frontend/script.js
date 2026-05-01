@@ -1144,11 +1144,11 @@ async function loadThrusterConfig() {
 
 
 // ==================== HALAMAN CAMERA SETTINGS ====================
-function sendCameraSettingsCommand(command, value = null) {
+function sendCameraSettingsCommand(command, value = null) { 
     const now = Date.now();
 
     if (
-        command === lastCommand &&
+        command === lastCommand && 
         now - lastSentTime < 100
     ) {
         return;
