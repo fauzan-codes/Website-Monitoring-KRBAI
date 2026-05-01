@@ -388,7 +388,13 @@ function setupSingleCameraActions({
     screenshotBtn.addEventListener("click", async () => {
         if (cameraIsOff()) return;
 
-        // bottom camera belum backend!!!!!!!!!!!!!!!!!!!!
+        screenshotBtn.classList.add("click-effect");
+
+        setTimeout(() => {
+            screenshotBtn.classList.remove("click-effect");
+        }, 100);
+
+        // bottom camera backend belum ada!!!!!!!!!!!!!!!!!!!!
         if (!screenshotEndpoint) {
             console.log("Bottom camera screenshot backend not available yet");
             return;
