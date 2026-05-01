@@ -2,10 +2,9 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from datetime import datetime
-import time
 import cv2
 import os
-import threading
+import re
 
 router = APIRouter(prefix="/camera")
 
@@ -61,6 +60,35 @@ def generate_frames():
             b'\r\n'
         )
 
+def get_next_index(folder_path: str, base_prefix: str, ext: str):
+
+    pattern = re.compile(rf"{base_prefix}_\d{{4}}-\d{{2}}-\d{{2}}_(\d+)\.{ext}$")
+    max_index = 0
+
+    for filename in os.listdir(folder_path):
+        match = pattern.match(filename)
+        if match:
+            try:
+                num = int(match.group(1))
+                if num > max_index:
+                    max_index = num
+            except:
+                pass
+
+    return max_index + 1
+
+
+
+
+
+
+
+
+
+
+
+
+
 @router.get("/stream")
 def stream_camera():
     return StreamingResponse(
@@ -80,7 +108,10 @@ def take_screenshot():
             "message": "Turn on camera first"
         }
 
-    filename = f"front_screenshot_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.jpg"
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    next_index = get_next_index(SCREENSHOT_DIR, "front_screenshot", "jpg")
+
+    filename = f"front_screenshot_{date_str}_{str(next_index).zfill(3)}.jpg"
     filepath = os.path.join(SCREENSHOT_DIR, filename)
 
     cv2.imwrite(filepath, latest_frame)
@@ -111,7 +142,10 @@ def start_recording():
 
     height, width, _ = latest_frame.shape
 
-    filename = f"front_recording_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.avi"
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    next_index = get_next_index(RECORD_DIR, "front_recording", "avi")
+
+    filename = f"front_recording_{date_str}_{str(next_index).zfill(3)}.avi"
     filepath = os.path.join(RECORD_DIR, filename)
 
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
