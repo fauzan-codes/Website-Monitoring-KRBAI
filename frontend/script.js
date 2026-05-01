@@ -812,6 +812,23 @@ function setupKeyboardControl() {
 
     let activeKey = null;
 
+    const buttons = document.querySelectorAll("#keyboard-panel .control-btn");
+
+    function setActiveButton(command) {
+        buttons.forEach(btn => {
+            if (btn.dataset.command === command) {
+                btn.classList.add("active-press");
+            }
+        });
+    }
+
+    function clearActiveButtons() {
+        buttons.forEach(btn => {
+            btn.classList.remove("active-press");
+        });
+    }
+
+    // ===== KEYBOARD PRESS =====
     document.addEventListener("keydown", (e) => {
         if (currentControlMode !== "keyboard") return;
 
@@ -820,15 +837,16 @@ function setupKeyboardControl() {
 
         if (!cmd) return;
 
-        // ❗ kalau masih tombol yang sama → ignore
         if (activeKey === key) return;
 
         activeKey = key;
 
-        console.log(`Sending command: ${cmd}`);
+        clearActiveButtons();
+        setActiveButton(cmd);
+
+        console.log("Send :", cmd)
         sendThrusterCommand(cmd);
     });
-
 
     document.addEventListener("keyup", (e) => {
         if (currentControlMode !== "keyboard") return;
@@ -838,19 +856,36 @@ function setupKeyboardControl() {
         if (key === activeKey) {
             activeKey = null;
 
-            console.log("Sending command: STOP");
+            clearActiveButtons();
+
+            console.log("Send : STOP")
             sendThrusterCommand("STOP");
         }
     });
 
-    document.querySelectorAll("#keyboard-panel .control-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
+    // ===== CLICK MOUSE =====
+    buttons.forEach(btn => {
+        btn.addEventListener("mousedown", () => {
             if (currentControlMode !== "keyboard") return;
 
-            const cmd = btn.dataset.command;
-            console.log(`Sending command: ${cmd}`);
+            clearActiveButtons();
+            btn.classList.add("active-press");
 
+            console.log("Send :", btn.dataset.command)
             sendThrusterCommand(btn.dataset.command);
+        });
+
+        btn.addEventListener("mouseup", () => {
+            if (currentControlMode !== "keyboard") return;
+
+            btn.classList.remove("active-press");
+
+            console.log("Send : STOP")
+            sendThrusterCommand("STOP");
+        });
+
+        btn.addEventListener("mouseleave", () => {
+            btn.classList.remove("active-press");
         });
     });
 }
@@ -1002,7 +1037,13 @@ function setupMotorSlider() {
         startBtn.addEventListener("click", async () => {
 
             startBtn.disabled = true;
-            startBtn.innerHTML = "Running...";
+            startBtn.classList.add("loading");
+
+            const originalHTML = startBtn.innerHTML;
+            startBtn.innerHTML = `
+                <i class="fas fa-spinner fa-spin"></i>
+                Running
+            `;
 
             const values = {};
 
@@ -1037,11 +1078,9 @@ function setupMotorSlider() {
 
             setTimeout(() => {
                 startBtn.disabled = false;
-                startBtn.innerHTML = `
-                    <i class="fas fa-play"></i>
-                    Start Test
-                `;
-            }, 1500);
+                startBtn.classList.remove("loading");
+                startBtn.innerHTML = originalHTML;
+            }, 2000);
         });
     }
 }
@@ -1051,9 +1090,18 @@ function setupEmergencyStop() {
     const btn = document.getElementById("emergency-stop");
 
     btn.addEventListener("click", async () => {
+        const originalHTML = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.classList.add("loading");
+        btn.innerHTML = `
+            <i class="fas fa-spinner fa-spin"></i>
+            Stop
+        `;
+
         sendThrusterCommand("EMERGENCY_STOP");
 
-        // 🔥 reset UI langsung
+        // reset UI
         const sliders = document.querySelectorAll(".motor-slider");
 
         sliders.forEach(slider => {
@@ -1066,10 +1114,13 @@ function setupEmergencyStop() {
             valueText.textContent = "0%";
         });
 
-        // 🔥 optional: reload dari backend biar sync
         setTimeout(() => {
             loadThrusterConfig();
-        }, 300);
+
+            btn.disabled = false;
+            btn.classList.remove("loading");
+            btn.innerHTML = originalHTML;
+        }, 1000);
     });
 }
 

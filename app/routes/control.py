@@ -74,7 +74,7 @@ async def thruster_test(data: ThrusterTest, db: Session = Depends(get_db)):
     db.add(config)
     db.commit()
 
-    print("CONFIG SAVED ✅")
+    print("\nCONFIG SAVED\n")
 
     return {
         "success": True,
@@ -118,7 +118,7 @@ async def control_command(data: ControlCommand, db: Session = Depends(get_db)):
             db.commit()
             db.refresh(config)
 
-        # 🔥 reset semua ke 0
+        # reset semua ke 0
         config.front_left = 0
         config.front_right = 0
         config.rear_left = 0
@@ -128,7 +128,7 @@ async def control_command(data: ControlCommand, db: Session = Depends(get_db)):
 
         db.commit()
 
-        print("🚨 EMERGENCY STOP → CONFIG RESET TO 0")
+        print("CONFIG RESET TO 0\n")
 
     return {
         "success": True,
