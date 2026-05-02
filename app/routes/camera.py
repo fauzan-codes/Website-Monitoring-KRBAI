@@ -198,3 +198,9 @@ def record_status():
     return {
         "recording": recording
     }
+
+@router.get("/status")
+def camera_status():
+    return {
+        "available": cap.isOpened()
+    }

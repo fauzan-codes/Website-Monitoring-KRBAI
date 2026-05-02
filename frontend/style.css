@@ -1604,19 +1604,19 @@ body {
 /* ONLINE */
 .camera-settings-page .status-badge.online {
     background: rgba(0, 255, 120, 0.12);
-    color: #00ff88;
+    color: var(--accent-green);
 }
 .camera-settings-page .status-badge.online::before {
-    background: #00ff88;
+    background: var(--accent-green);
 }
 
 /* OFFLINE */
 .camera-settings-page .status-badge.offline {
     background: rgba(255, 77, 79, 0.12);
-    color: #ff4d4f;
+    color: var(--accent-red);   
 }
 .camera-settings-page .status-badge.offline::before {
-    background: #ff4d4f;
+    background: var(--accent-red);
 }
 
 /* CONNECTING */

@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (path === "/camera-settings") {
         initCameraSelection();
+        initCameraSettingsActions();
         initCameraAdjustment();
     }
 
@@ -192,7 +193,7 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
 
     function setErrorUI() {
         placeholder.style.display = "block";
-        placeholder.querySelector("p").textContent = "Invalid Camera";
+        placeholder.querySelector("p").textContent = "Camera Not Available";
         badge.textContent = "OFFLINE";
         badge.className = "live-badge offline";
         img.removeAttribute("src");
@@ -1178,41 +1179,50 @@ function sendCameraSettingsCommand(command, value = null) {
 
 
 function initCameraSelection() {
+
     const options = document.querySelectorAll(".camera-option");
     const img = document.getElementById("settings-camera-stream");
     const placeholder = document.querySelector(".camera-placeholder");
 
-    let activeCamera = "front";
+    window.activeCamera = "front";
 
     const cameraMap = {
-        front: "/camera/front",
-        bottom: "/camera/bottom",
-        side: "/camera/side"
+        front: "/camera/stream",
+        bottom: "/camera/stream", 
+        side: null   // belum ada backend
     };
+
+    checkAllCameras(options, cameraMap);
+    setInterval(() => {
+        checkAllCameras(options, cameraMap);
+    }, 5000);
 
     function setCamera(cameraKey) {
         const url = cameraMap[cameraKey];
 
-        activeCamera = cameraKey;
+        window.activeCamera = cameraKey;
+        img.src = "";
 
-        // reset UI
         img.style.display = "none";
         placeholder.style.display = "flex";
         placeholder.querySelector("p").textContent = "Connecting...";
 
-        img.src = `${url}?t=${Date.now()}`;
+        if (!url) {
+            placeholder.querySelector("p").textContent = "Camera Not Available";
+            return;
+        }
+
+        setTimeout(() => {
+            img.src = `${url}?t=${Date.now()}`;
+        }, 200);
 
         img.onload = () => {
             img.style.display = "block";
             placeholder.style.display = "none";
-            updateStatus(cameraKey, "online");
         };
 
         img.onerror = () => {
-            img.style.display = "none";
-            placeholder.style.display = "flex";
             placeholder.querySelector("p").textContent = "Camera Offline";
-            updateStatus(cameraKey, "offline");
         };
     }
 
@@ -1220,15 +1230,12 @@ function initCameraSelection() {
         options.forEach(opt => {
             const badge = opt.querySelector(".status-badge");
             const key = opt.dataset.camera;
-
-            badge.classList.remove("online", "offline", "connecting");
+            setBadge(badge, "connecting");
 
             if (key === activeKey) {
+                badge.classList.remove("online", "offline");
                 badge.classList.add(state);
                 badge.textContent = state.toUpperCase();
-            } else {
-                badge.classList.add("offline");
-                badge.textContent = "OFFLINE";
             }
         });
     }
@@ -1238,14 +1245,149 @@ function initCameraSelection() {
             options.forEach(o => o.classList.remove("active"));
             option.classList.add("active");
 
-            const cameraKey = option.dataset.camera;
-            setCamera(cameraKey);
+            setCamera(option.dataset.camera);
         });
     });
 
-    setCamera(activeCamera);
+    setCamera(window.activeCamera);
 }
 
+function initCameraSettingsActions() {
+    const screenshotBtn = document.getElementById("settings-screenshot-btn");
+    const recordBtn = document.getElementById("settings-record-btn");
+
+    let isRecording = false;
+    let cooldown = false;
+
+    function getEndpoints() {
+        const cam = window.activeCamera;
+
+        if (cam === "front") {
+            return {
+                screenshot: "/camera/screenshot",
+                start: "/camera/record/start",
+                stop: "/camera/record/stop"
+            };
+        }
+
+        if (cam === "bottom") {
+            return {
+                screenshot: "/camera/screenshot",
+                start: "/camera/record/start",
+                stop: "/camera/record/stop"
+            };
+        }
+
+        // camera lain belum ada backend
+        return {
+            screenshot: null,
+            start: null,
+            stop: null
+        };
+    }
+
+    function updateRecordUI() {
+        if (isRecording) {
+            recordBtn.innerHTML = `<i class="fas fa-stop"></i>`;
+            recordBtn.classList.add("recording-active");
+        } else {
+            recordBtn.innerHTML = `<i class="fas fa-video"></i>`;
+            recordBtn.classList.remove("recording-active");
+        }
+    }
+
+    // ================= SCREENSHOT =================
+    screenshotBtn.addEventListener("click", async () => {
+        const { screenshot } = getEndpoints();
+
+        screenshotBtn.classList.add("click-effect");
+        setTimeout(() => {
+            screenshotBtn.classList.remove("click-effect");
+        }, 100);
+
+        if (!screenshot) {
+            console.log("Camera not supported yet");
+            return;
+        }
+
+        try {
+            const res = await fetch(screenshot, { method: "POST" });
+            const data = await res.json();
+            console.log(data.message);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    // ================= RECORD =================
+    recordBtn.addEventListener("click", async () => {
+        if (cooldown) return;
+
+        cooldown = true;
+        setTimeout(() => (cooldown = false), 800);
+
+        const { start, stop } = getEndpoints();
+
+        if (!start || !stop) {
+            isRecording = !isRecording;
+            updateRecordUI();
+            console.log("Dummy recording (no backend)");
+            return;
+        }
+
+        const endpoint = isRecording ? stop : start;
+
+        try {
+            const res = await fetch(endpoint, { method: "POST" });
+            const data = await res.json();
+
+            if (data.success) {
+                isRecording = !isRecording;
+                updateRecordUI();
+            }
+
+            console.log(data.message);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    updateRecordUI();
+}
+
+async function checkAllCameras(options, cameraMap) {
+    for (const option of options) {
+        const key = option.dataset.camera;
+        const badge = option.querySelector(".status-badge");
+        const url = cameraMap[key];
+
+        if (!url) {
+            setBadge(badge, "offline");
+            continue;
+        }
+
+        try {
+            const res = await fetch("/camera/status");
+            const data = await res.json();
+
+            if (data.available) {
+                setBadge(badge, "online");
+            } else {
+                setBadge(badge, "offline");
+            }
+        } catch (err) {
+            setBadge(badge, "offline");
+        }
+    }
+}
+
+function setBadge(badge, state) {
+    if (badge.classList.contains(state)) return;
+
+    badge.classList.remove("online", "offline", "connecting");
+    badge.classList.add(state);
+    badge.textContent = state.toUpperCase();
+}
 
 
 function initCameraAdjustment() {
