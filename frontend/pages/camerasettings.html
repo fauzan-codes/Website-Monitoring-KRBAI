@@ -4,194 +4,155 @@
     <!-- CAMERA SELECTION -->
     <section class="control-section">
         <div class="section-header">
-            <h3>
-                <i class="fas fa-camera"></i>
-                Camera Selection
-            </h3>
+            <h3><i class="fas fa-camera"></i> Camera Selection</h3>
         </div>
 
-        <div class="camera-selection-grid">
-
-            <div class="camera-select-box">
-                <label>Active Camera</label>
-                <select>
-                    <option>Front Camera</option>
-                    <option>Bottom Camera</option>
-                    <option>Side Camera</option>
-                </select>
+        <div class="camera-selection">
+            <div class="camera-option active" data-camera="front">
+                <span>Front Camera</span>
+                <span class="status-badge offline">Offline</span>
             </div>
 
-            <div class="camera-status-list">
+            <div class="camera-option" data-camera="bottom">
+                <span>Bottom Camera</span>
+                <span class="status-badge offline">Offline</span>
+            </div>
 
-                <div class="camera-status-item">
-                    <span>Front Camera</span>
-                    <span class="status-badge online">Online</span>
-                </div>
-
-                <div class="camera-status-item">
-                    <span>Bottom Camera</span>
-                    <span class="status-badge offline">Offline</span>
-                </div>
-
-                <div class="camera-status-item">
-                    <span>Side Camera</span>
-                    <span class="status-badge online">Online</span>
-                </div>
-
+            <div class="camera-option" data-camera="side">
+                <span>Side Camera</span>
+                <span class="status-badge offline">Offline</span>
             </div>
         </div>
     </section>
 
 
-    <!-- LIVE PREVIEW + CAMERA SETTINGS -->
-    <div class="camera-main-layout">
+    <!-- MAIN -->
+    <div class="camera-layout">
 
-        <!-- LIVE PREVIEW -->
-        <section class="control-section">
+        <!-- LEFT: PREVIEW -->
+        <section class="control-section preview-section">
             <div class="section-header">
-                <h3>
-                    <i class="fas fa-video"></i>
-                    Live Preview
-                </h3>
-            </div>
+                <h3><i class="fas fa-video"></i> Live Preview</h3>
 
-            <div class="camera-feed large-feed">
-                <img class="camera-stream" src="">
-                
-                <div class="camera-placeholder">
-                    <i class="fas fa-camera"></i>
-                    <p>Camera Preview Offline</p>
+                <div class="camera-controls">
+                    <button id="settings-screenshot-btn" class="btn-icon" title="Screenshot">
+                        <i class="fas fa-camera"></i>
+                    </button>
+
+                    <button id="settings-record-btn" class="btn-icon" title="Start Recording">
+                        <i class="fas fa-video"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="camera-action-buttons">
-                <button class="btn btn-primary">
-                    <i class="fas fa-camera"></i>
-                    Capture
-                </button>
+            <div class="camera-feed">
+                <img id="settings-camera-stream" class="camera-stream">
 
-                <button class="btn btn-secondary">
-                    <i class="fas fa-video"></i>
-                    Record
-                </button>
+                <div class="camera-placeholder">
+                    <i class="fas fa-camera"></i>
+                    <p>Camera Offline</p>
+                </div>
+
             </div>
         </section>
 
 
-        <!-- CAMERA ADJUSTMENT -->
+        <!-- RIGHT: ADJUSTMENT -->
         <section class="control-section">
             <div class="section-header">
-                <h3>
-                    <i class="fas fa-sliders-h"></i>
-                    Camera Adjustment
-                </h3>
+                <h3><i class="fas fa-sliders-h"></i> Camera Adjustment</h3>
             </div>
 
-            <div class="camera-adjustment-list">
+            <div class="adjustment-list">
 
-                <div class="adjustment-item">
-                    <div class="adjustment-top">
+                <!-- item -->
+                <div class="adjust-item">
+                    <div class="adjust-head">
                         <span>Brightness</span>
-                        <span>50%</span>
+                        <span class="adjust-value">50%</span>
                     </div>
-                    <input type="range" min="0" max="100" value="50">
+                    <input type="range" class="adjust-slider" min="0" max="100" value="50">
                 </div>
 
-                <div class="adjustment-item">
-                    <div class="adjustment-top">
+                <div class="adjust-item">
+                    <div class="adjust-head">
                         <span>Contrast</span>
-                        <span>50%</span>
+                        <span class="adjust-value">50%</span>
                     </div>
-                    <input type="range" min="0" max="100" value="50">
+                    <input type="range" class="adjust-slider" min="0" max="100" value="50">
                 </div>
 
-                <div class="adjustment-item">
-                    <div class="adjustment-top">
+                <div class="adjust-item">
+                    <div class="adjust-head">
                         <span>White Balance</span>
-                        <span>50%</span>
+                        <span class="adjust-value">50%</span>
                     </div>
-                    <input type="range" min="0" max="100" value="50">
+                    <input type="range" class="adjust-slider" min="0" max="100" value="50">
                 </div>
 
-                <div class="adjustment-item">
-                    <div class="adjustment-top">
+                <div class="adjust-item">
+                    <div class="adjust-head">
                         <span>Gamma</span>
-                        <span>50%</span>
+                        <span class="adjust-value">50%</span>
                     </div>
-                    <input type="range" min="0" max="100" value="50">
+                    <input type="range" class="adjust-slider" min="0" max="100" value="50">
                 </div>
 
-                <div class="adjustment-item">
-                    <div class="adjustment-top">
+                <div class="adjust-item">
+                    <div class="adjust-head">
                         <span>Saturation</span>
-                        <span>50%</span>
+                        <span class="adjust-value">50%</span>
                     </div>
-                    <input type="range" min="0" max="100" value="50">
+                    <input type="range" class="adjust-slider" min="0" max="100" value="50">
                 </div>
 
             </div>
 
-            <div class="camera-action-buttons">
-                <button class="btn btn-primary">
-                    Save Preset
-                </button>
-
-                <button class="btn btn-secondary">
-                    Reset
-                </button>
+            <div class="adjust-actions">
+                <button class="btn btn-primary">Save</button>
+                <button class="btn btn-secondary">Reset</button>
             </div>
         </section>
 
     </div>
 
 
-    <!-- MEDIA MANAGEMENT -->
+    <!-- MEDIA -->
     <section class="control-section">
         <div class="section-header">
-            <h3>
-                <i class="fas fa-photo-video"></i>
-                Media Management
-            </h3>
+            <h3><i class="fas fa-photo-video"></i> Media</h3>
         </div>
-
         <div class="media-grid">
-
-            <!-- Photos -->
-            <div class="media-column">
-                <h4>Recent Photos</h4>
-
+            <div class="media-list">
                 <div class="media-item">
                     <i class="fas fa-image"></i>
                     <span>photo_001.jpg</span>
-                    <button class="btn-icon">
-                        <i class="fas fa-download"></i>
-                    </button>
+                    <button class="btn-icon"><i class="fas fa-download"></i></button>
                 </div>
 
                 <div class="media-item">
                     <i class="fas fa-image"></i>
                     <span>photo_002.jpg</span>
-                    <button class="btn-icon">
-                        <i class="fas fa-download"></i>
-                    </button>
+                    <button class="btn-icon"><i class="fas fa-download"></i></button>
                 </div>
+
             </div>
-
-
-            <!-- Videos -->
-            <div class="media-column">
-                <h4>Recent Videos</h4>
+            <div class="media-list">
+                <div class="media-item">
+                    <i class="fas fa-film"></i>
+                    <span>video_001.mp4</span>
+                    <button class="btn-icon"><i class="fas fa-download"></i></button>
+                </div>
 
                 <div class="media-item">
                     <i class="fas fa-film"></i>
-                    <span>recording_001.mp4</span>
-                    <button class="btn-icon">
-                        <i class="fas fa-download"></i>
-                    </button>
+                    <span>video_002.mp4</span>
+                    <button class="btn-icon"><i class="fas fa-download"></i></button>
                 </div>
-            </div>
 
+            </div>
         </div>
+        
     </section>
 
 </div>

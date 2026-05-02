@@ -185,7 +185,7 @@ body {
 
 
 
-/* ==================== DASHBOARD GRID ==================== */
+/* ==================== HALAMAN DASHBOARD GRID ==================== */
 .widget {
     background: var(--bg-secondary); 
     border: 0.1rem solid var(--border-color);
@@ -286,7 +286,7 @@ body {
 
 
 
-/* ========== Camera Setting ========== */
+/* ========== Camera ========== */
 .camera-controls {
     display: flex;
     align-items: center;
@@ -604,11 +604,7 @@ body {
 
 
 
-
-
-
-
-/* ============================== HALAMAN DASHBOARD ============================== */
+/* ============================================== */
 @media (max-width: 1150px) {
     html{
         font-size: 90%;
@@ -1554,198 +1550,201 @@ body {
 .camera-settings-page {
     display: flex;
     flex-direction: column;
-    gap: 1.3rem;
-}
-
-
-/* top section */
-.camera-selection-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.3rem;
-}
-
-.camera-select-box {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-}
-
-.camera-select-box label {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.camera-select-box select {
-    background: var(--bg-primary);
-    border: 0.1rem solid var(--border-color);
-    color: white;
-    padding: 0.8rem;
-    border-radius: 0.6rem;
-    font-family: 'Poppins', sans-serif;
-}
-
-.camera-select-box select:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-}
-
-
-/* camera status */
-.camera-status-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.camera-status-item {
-    background: var(--bg-primary);
-    border: 0.1rem solid var(--border-color);
-    padding: 1rem;
-    border-radius: 0.7rem;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.status-badge {
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.status-badge.online {
-    background: rgba(0, 200, 83, 0.15);
-    color: var(--accent-green);
-}
-
-.status-badge.offline {
-    background: rgba(255, 77, 79, 0.15);
-    color: var(--accent-red);
-}
-
-
-/* main layout */
-.camera-main-layout {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 1.3rem;
-}
-
-
-/* larger preview */
-.large-feed {
-    margin-bottom: 1rem;
-}
-
-
-/* adjustment */
-.camera-adjustment-list {
-    display: flex;
-    flex-direction: column;
     gap: 1.2rem;
 }
 
-.adjustment-item {
+.camera-settings-page  .camera-selection {
     display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
-.adjustment-top {
+.camera-settings-page .camera-option {
+    flex: 1;
+    min-width: 150px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 1rem;
+    border-radius: 0.6rem;
     display: flex;
     justify-content: space-between;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.camera-settings-page .camera-option:hover {
+    border-color: var(--accent-primary);
+}
+
+.camera-settings-page .camera-option.active {
+    border-color: var(--accent-primary);
+    background: rgba(0,184,212,0.08);
+    box-shadow: 0 0 0 1px rgba(0,184,212,0.2);
+}
+
+/* ===== STATUS BADGE (IMPROVED) ===== */
+.camera-settings-page .status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* dot indicator */
+.camera-settings-page .status-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+/* ONLINE */
+.camera-settings-page .status-badge.online {
+    background: rgba(0, 255, 120, 0.12);
+    color: #00ff88;
+}
+.camera-settings-page .status-badge.online::before {
+    background: #00ff88;
+}
+
+/* OFFLINE */
+.camera-settings-page .status-badge.offline {
+    background: rgba(255, 77, 79, 0.12);
+    color: #ff4d4f;
+}
+.camera-settings-page .status-badge.offline::before {
+    background: #ff4d4f;
+}
+
+/* CONNECTING */
+.camera-settings-page .status-badge.connecting {
+    background: rgba(255, 193, 7, 0.12);
+    color: #ffc107;
+}
+.camera-settings-page .status-badge.connecting::before {
+    background: #ffc107;
 }
 
 
-/* slider */
-.adjustment-item input[type="range"] {
+/* camera Preview*/
+.camera-settings-page .camera-layout {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 1.2rem;
+}
+
+.camera-settings-page .camera-feed {
+    position: relative;
     width: 100%;
-    height: 0.5rem;
+    aspect-ratio: 16/9;
+    background: #111820;
+    border-radius: 0.6rem;
+    overflow: hidden;
+}
+
+.camera-settings-page .camera-stream {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.camera-settings-page .camera-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+}
+
+
+.camera-settings-page .adjust-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.camera-settings-page .adjust-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* slider */
+.camera-settings-page .adjust-slider {
     appearance: none;
+    height: 6px;
+    border-radius: 10px;
     background: #374151;
-    border-radius: 1rem;
     outline: none;
 }
 
-.adjustment-item input[type="range"]::-webkit-slider-thumb {
+.camera-settings-page .adjust-slider::-webkit-slider-thumb {
     appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: var(--accent-primary);
     cursor: pointer;
 }
 
-.adjustment-item input[type="range"]::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--accent-primary);
-    cursor: pointer;
-    border: none;
-}
-
-
-/* action buttons */
-.camera-action-buttons {
+/* ===== ACTION ===== */
+.camera-settings-page .adjust-actions {
+    margin-top: 1rem;
     display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-
-/* media */
-.media-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.3rem;
-}
-
-.media-column h4 {
-    margin-bottom: 1rem;
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-}
-
-.media-item {
-    background: var(--bg-primary);
-    border: 0.1rem solid var(--border-color);
-    border-radius: 0.7rem;
-    padding: 1rem;
-    margin-bottom: 0.8rem;
-
-    display: flex;
-    align-items: center;
     gap: 0.8rem;
 }
 
-.media-item span {
+/* ===== MEDIA ===== */
+.camera-settings-page .media-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 0.6rem;
+    width: 100%; 
+}
+
+/* ===== MEDIA ===== */
+.camera-settings-page .media-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex: 1; 
+}
+
+.camera-settings-page .media-item {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.7rem 1rem;
+    border-radius: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.camera-settings-page .media-item span {
     flex: 1;
 }
 
-.media-item i:first-child {
-    color: var(--accent-primary);
-}
-
-
-/* responsive */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
-    .camera-selection-grid,
-    .camera-main-layout,
-    .media-grid {
+    .camera-settings-page .camera-layout {
         grid-template-columns: 1fr;
     }
 
-    .camera-action-buttons {
+    .camera-settings-page .camera-selection {
+        flex-direction: column;
+    }
+
+    .camera-settings-page .adjust-actions {
         flex-direction: column;
     }
 }
-
 
 
 

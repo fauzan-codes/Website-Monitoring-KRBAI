@@ -15,6 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
         initThrusterControl();
     }
 
+    if (path === "/camera-settings") {
+        initCameraSelection();
+        initCameraAdjustment();
+    }
+
     initSidebarToggle();
     setActiveSidebar();
 
@@ -1172,7 +1177,104 @@ function sendCameraSettingsCommand(command, value = null) {
 
 
 
+function initCameraSelection() {
+    const options = document.querySelectorAll(".camera-option");
+    const img = document.getElementById("settings-camera-stream");
+    const placeholder = document.querySelector(".camera-placeholder");
 
+    let activeCamera = "front";
+
+    const cameraMap = {
+        front: "/camera/front",
+        bottom: "/camera/bottom",
+        side: "/camera/side"
+    };
+
+    function setCamera(cameraKey) {
+        const url = cameraMap[cameraKey];
+
+        activeCamera = cameraKey;
+
+        // reset UI
+        img.style.display = "none";
+        placeholder.style.display = "flex";
+        placeholder.querySelector("p").textContent = "Connecting...";
+
+        img.src = `${url}?t=${Date.now()}`;
+
+        img.onload = () => {
+            img.style.display = "block";
+            placeholder.style.display = "none";
+            updateStatus(cameraKey, "online");
+        };
+
+        img.onerror = () => {
+            img.style.display = "none";
+            placeholder.style.display = "flex";
+            placeholder.querySelector("p").textContent = "Camera Offline";
+            updateStatus(cameraKey, "offline");
+        };
+    }
+
+    function updateStatus(activeKey, state) {
+        options.forEach(opt => {
+            const badge = opt.querySelector(".status-badge");
+            const key = opt.dataset.camera;
+
+            badge.classList.remove("online", "offline", "connecting");
+
+            if (key === activeKey) {
+                badge.classList.add(state);
+                badge.textContent = state.toUpperCase();
+            } else {
+                badge.classList.add("offline");
+                badge.textContent = "OFFLINE";
+            }
+        });
+    }
+
+    options.forEach(option => {
+        option.addEventListener("click", () => {
+            options.forEach(o => o.classList.remove("active"));
+            option.classList.add("active");
+
+            const cameraKey = option.dataset.camera;
+            setCamera(cameraKey);
+        });
+    });
+
+    setCamera(activeCamera);
+}
+
+
+
+function initCameraAdjustment() {
+    const sliders = document.querySelectorAll(".adjust-slider");
+
+    sliders.forEach(slider => {
+        const parent = slider.closest(".adjust-item"); // FIX DISINI
+        if (!parent) return; // biar gak crash
+
+        const valueText = parent.querySelector(".adjust-value");
+
+        function update() {
+            if (valueText) {
+                valueText.textContent = slider.value + "%";
+            }
+
+            slider.style.background = `linear-gradient(
+                to right,
+                var(--accent-primary) 0%,
+                var(--accent-primary) ${slider.value}%,
+                #374151 ${slider.value}%,
+                #374151 100%
+            )`;
+        }
+
+        slider.addEventListener("input", update);
+        update();
+    });
+}
 
 
 
