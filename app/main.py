@@ -30,6 +30,35 @@ app.include_router(orientation.router)
 
 Base.metadata.create_all(bind=engine)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    from app.routes.camera import release_camera
+    release_camera()
+    print("Server shutdown clean")
+
+
+
+
+
+
+
+
+
+
 @app.get("/")
 def dashboard(request: Request):
     return templates.TemplateResponse(

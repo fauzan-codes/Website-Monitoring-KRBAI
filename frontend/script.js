@@ -2,6 +2,15 @@
 let telemetrySocket = null;
 let reconnectCount = 0;
 
+// ==================== GLOBAL CONFIG ====================
+const BASE_CAMERA_URL = `${window.location.origin}`;
+
+const CAMERA_CONFIG = {
+    front: `${BASE_CAMERA_URL}/camera/front/stream`,
+    bottom: `${BASE_CAMERA_URL}/camera/bottom/stream`,
+    side: `${BASE_CAMERA_URL}/camera/side/stream`
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     setSystemStatus(true);
 
@@ -113,14 +122,12 @@ function setSystemStatus(isOnline) {
 
 // ==================== HALAMAN DASHBOARD ====================
 function initDashboard() {
-    const baseURL = `${window.location.origin}/camera/stream`;
-
     Camera({
         imgId: "front-camera",
         placeholderId: "front-placeholder",
         toggleId: "front-toggle",
         badgeId: "front-badge",
-        url: baseURL
+        url: CAMERA_CONFIG.front
     });
 
     Camera({
@@ -128,7 +135,7 @@ function initDashboard() {
         placeholderId: "bottom-placeholder",
         toggleId: "bottom-toggle",
         badgeId: "bottom-badge",
-        url: null
+        url: CAMERA_CONFIG.bottom
     });
 
     setupCameraActions();
@@ -180,8 +187,10 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
     let isLoading = false;
     let lock = false;
     let timeoutId = null;
+    let cameraState = "offline";
 
     function setOfflineUI() {
+        toggle.dataset.state = "offline";
         placeholder.style.display = "block";
         placeholder.querySelector("p").textContent = "Camera Offline";
         badge.textContent = "OFFLINE";
@@ -192,6 +201,7 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
     }
 
     function setErrorUI() {
+        toggle.dataset.state = "offline";   
         placeholder.style.display = "block";
         placeholder.querySelector("p").textContent = "Camera Not Available";
         badge.textContent = "OFFLINE";
@@ -202,6 +212,7 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
     }
 
     function setWaitingUI() {
+        toggle.dataset.state = "connecting";
         placeholder.style.display = "block";
         placeholder.querySelector("p").textContent = "Waiting for robot camera...";
         badge.textContent = "CONNECTING";
@@ -210,6 +221,7 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
     }
 
     function setLiveUI() {
+        toggle.dataset.state = "live";
         placeholder.style.display = "none";
         badge.textContent = "LIVE";
         badge.className = "live-badge live";
@@ -217,8 +229,7 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
     }
 
     toggle.addEventListener("change", () => {
-        if (!url) {
-            console.log("Invalid URL camera: ", url);
+        if (!url || url === "null") {
             setErrorUI();
             return;
         }
@@ -272,6 +283,15 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
             console.log("Camera error, Tolong cek lagi url atau kameranya\nURL Camera: \"url\"");
             clearTimeout(timeoutId);
             isLoading = false;
+
+            if (isRecording) {
+                safeStopRecording();
+            }
+
+            document.dispatchEvent(new CustomEvent("camera-lost", {
+                detail: { camera: imgId }
+            }));
+
             setErrorUI();
         };
     });
@@ -283,61 +303,68 @@ function Camera({ imgId, placeholderId, toggleId, badgeId, url }) {
 
 function setupCameraActions() {
     setupSingleCameraActions({
-        screenshotBtnId: "front-screenshot-btn",
+        captureBtnId: "front-capture-btn",
         recordBtnId: "front-record-btn",
         toggleId: "front-toggle",
-
-        screenshotEndpoint: "/camera/screenshot",
-        recordStartEndpoint: "/camera/record/start",
-        recordStopEndpoint: "/camera/record/stop"
+        cameraName: "front"
     });
 
-    // bottom camera UI behavior sama seperti front
-    // backend belum ada → sementara pakai alert dummy
     setupSingleCameraActions({
-        screenshotBtnId: "bottom-screenshot-btn",
+        captureBtnId: "bottom-capture-btn",
         recordBtnId: "bottom-record-btn",
         toggleId: "bottom-toggle",
+        cameraName: "bottom"
+    });
 
-        screenshotEndpoint: null,
-        recordStartEndpoint: null,
-        recordStopEndpoint: null
+    setupSingleCameraActions({
+        captureBtnId: "side-capture-btn",
+        recordBtnId: "side-record-btn",
+        toggleId: "side-toggle",
+        cameraName: "side"
     });
 }
 
 
 /* reusable camera action */
 function setupSingleCameraActions({
-    screenshotBtnId,
+    captureBtnId,
     recordBtnId,
     toggleId,
-    screenshotEndpoint,
-    recordStartEndpoint,
-    recordStopEndpoint
+    cameraName
 }) {
 
-    const screenshotBtn = document.getElementById(screenshotBtnId);
+    const captureBtn = document.getElementById(captureBtnId);
     const recordBtn = document.getElementById(recordBtnId);
     const toggle = document.getElementById(toggleId);
 
-    if (!screenshotBtn || !recordBtn || !toggle) return;
+    if (!captureBtn || !recordBtn || !toggle) return;
 
     let isRecording = false;
     let recordCooldown = false;
+    let cameraState = "offline";
 
-    function cameraIsOff() {
-        return !toggle.checked;
+    function getEndpoints() {
+        return {
+            capture: `/camera/capture/${cameraName}`,
+            start: `/camera/record/start/${cameraName}`,
+            stop: `/camera/record/stop/${cameraName}`
+        };
+    }
+
+    function cameraIsNotReady() {
+        return toggle.dataset.state !== "live";
     }
 
     function updateActionButtons() {
-        const disabled = cameraIsOff();
+        const disabled = cameraIsNotReady();
 
-        screenshotBtn.disabled = disabled;
+        captureBtn.disabled = disabled;
         recordBtn.disabled = disabled;
 
         if (disabled && isRecording) {
+            console.log("Camera lost while recording");
             isRecording = false;
-            updateRecordUI();
+            safeStopRecording();
         }
     }
 
@@ -360,53 +387,31 @@ function setupSingleCameraActions({
     }
 
     async function safeStopRecording() {
-        if (!recordStopEndpoint) {
-            isRecording = false;
-            updateRecordUI();
-            return;
-        }
+        const { stop } = getEndpoints();
 
         try {
-            const res = await fetch(recordStopEndpoint, {
-                method: "POST"
-            });
-
-            const data = await res.json();
-
-            if (data.success) {
-                isRecording = false;
-                updateRecordUI();
-            }
-
+            await fetch(stop, { method: "POST" });
         } catch (err) {
             console.log(err);
         }
+
+        isRecording = false;
+        updateRecordUI();
     }
 
-    // screenshot
-    screenshotBtn.addEventListener("click", async () => {
-        if (cameraIsOff()) return;
+    // capture
+    captureBtn.addEventListener("click", async () => {
+        if (cameraIsNotReady()) return;
 
-        screenshotBtn.classList.add("click-effect");
+        const { capture } = getEndpoints();
 
-        setTimeout(() => {
-            screenshotBtn.classList.remove("click-effect");
-        }, 100);
-
-        // bottom camera backend belum ada!!!!!!!!!!!!!!!!!!!!
-        if (!screenshotEndpoint) {
-            console.log("Bottom camera screenshot backend not available yet");
-            return;
-        }
+        captureBtn.classList.add("click-effect");
+        setTimeout(() => captureBtn.classList.remove("click-effect"), 100);
 
         try {
-            const res = await fetch(screenshotEndpoint, {
-                method: "POST"
-            });
-
+            const res = await fetch(capture, { method: "POST" });
             const data = await res.json();
             console.log(data.message);
-
         } catch (err) {
             console.log(err);
         }
@@ -414,8 +419,9 @@ function setupSingleCameraActions({
 
     // record
     recordBtn.addEventListener("click", async () => {
-        if (cameraIsOff()) return;
-        if (recordCooldown) return;
+        if (cameraIsNotReady() || recordCooldown) return;
+
+        const { start, stop } = getEndpoints();
 
         recordCooldown = true;
         recordBtn.disabled = true;
@@ -425,24 +431,8 @@ function setupSingleCameraActions({
             updateActionButtons();
         }, 1000);
 
-        // bottom camera backend belum ada!!!!!!!!!!!!!!!!!!!!
-        if (!recordStartEndpoint || !recordStopEndpoint) {
-            isRecording = !isRecording;
-            updateRecordUI();
-
-            console.log(
-                isRecording
-                    ? "Bottom camera recording started (UI only)"
-                    : "Bottom camera recording stopped (UI only)"
-            );
-            return;
-        }
-
         try {
-            const endpoint = isRecording
-                ? recordStopEndpoint
-                : recordStartEndpoint;
-
+            const endpoint = isRecording ? stop : start;
             const res = await fetch(endpoint, {
                 method: "POST"
             });
@@ -461,12 +451,18 @@ function setupSingleCameraActions({
         }
     });
 
-    toggle.addEventListener("change", async () => {
-        if (!toggle.checked && isRecording) {
-            await safeStopRecording();
-        }
+    document.addEventListener("camera-lost", (e) => {
+        if (isRecording) {
+            console.log("Camera lost event → stopping recording");
 
-        updateActionButtons();
+            safeStopRecording();
+        }
+    });
+
+    const observer = new MutationObserver(updateActionButtons);
+    observer.observe(toggle, {
+        attributes: true,
+        attributeFilter: ["data-state"]
     });
 
     updateRecordUI();
@@ -1186,16 +1182,10 @@ function initCameraSelection() {
 
     window.activeCamera = "front";
 
-    const cameraMap = {
-        front: "/camera/stream",
-        bottom: "/camera/stream", 
-        side: null   // belum ada backend
-    };
+    const cameraMap = CAMERA_CONFIG;
 
-    checkAllCameras(options, cameraMap);
-    setInterval(() => {
-        checkAllCameras(options, cameraMap);
-    }, 5000);
+    CheckCameraStatus();
+    setInterval(CheckCameraStatus, 3000);
 
     function setCamera(cameraKey) {
         const url = cameraMap[cameraKey];
@@ -1213,8 +1203,14 @@ function initCameraSelection() {
         }
 
         setTimeout(() => {
-            img.src = `${url}?t=${Date.now()}`;
+            img.src = url;
         }, 200);
+
+        setTimeout(() => {
+            if (typeof updateCameraReady === "function") {
+                updateCameraReady();
+            }
+        }, 300);
 
         img.onload = () => {
             img.style.display = "block";
@@ -1253,37 +1249,46 @@ function initCameraSelection() {
 }
 
 function initCameraSettingsActions() {
-    const screenshotBtn = document.getElementById("settings-screenshot-btn");
+    const captureBtn = document.getElementById("settings-capture-btn");
     const recordBtn = document.getElementById("settings-record-btn");
 
     let isRecording = false;
     let cooldown = false;
+    let cameraReady = false; 
 
     function getEndpoints() {
         const cam = window.activeCamera;
-
-        if (cam === "front") {
-            return {
-                screenshot: "/camera/screenshot",
-                start: "/camera/record/start",
-                stop: "/camera/record/stop"
-            };
-        }
-
-        if (cam === "bottom") {
-            return {
-                screenshot: "/camera/screenshot",
-                start: "/camera/record/start",
-                stop: "/camera/record/stop"
-            };
-        }
-
-        // camera lain belum ada backend
         return {
-            screenshot: null,
-            start: null,
-            stop: null
+            capture: `/camera/capture/${cam}`,
+            start: `/camera/record/start/${cam}`,
+            stop: `/camera/record/stop/${cam}`
         };
+    }
+
+    async function updateCameraReady() {
+        const cam = window.activeCamera;
+
+        try {
+            const res = await fetch(`/camera/status/${cam}`);
+            const data = await res.json();
+
+            cameraReady = data.streaming === true;
+
+        } catch {
+            cameraReady = false;
+        }
+
+        updateButtons();
+    }
+
+    function updateButtons() {
+        captureBtn.disabled = !cameraReady;
+        recordBtn.disabled = !cameraReady;
+
+        if (!cameraReady && isRecording) {
+            isRecording = false;
+            updateRecordUI();
+        }
     }
 
     function updateRecordUI() {
@@ -1296,22 +1301,19 @@ function initCameraSettingsActions() {
         }
     }
 
-    // ================= SCREENSHOT =================
-    screenshotBtn.addEventListener("click", async () => {
-        const { screenshot } = getEndpoints();
+    // ================= CAPTURE =================
+    captureBtn.addEventListener("click", async () => {
+        if (!cameraReady) return;
 
-        screenshotBtn.classList.add("click-effect");
+        const { capture } = getEndpoints();
+
+        captureBtn.classList.add("click-effect");
         setTimeout(() => {
-            screenshotBtn.classList.remove("click-effect");
+            captureBtn.classList.remove("click-effect");
         }, 100);
 
-        if (!screenshot) {
-            console.log("Camera not supported yet");
-            return;
-        }
-
         try {
-            const res = await fetch(screenshot, { method: "POST" });
+            const res = await fetch(capture, { method: "POST" });
             const data = await res.json();
             console.log(data.message);
         } catch (err) {
@@ -1321,20 +1323,12 @@ function initCameraSettingsActions() {
 
     // ================= RECORD =================
     recordBtn.addEventListener("click", async () => {
-        if (cooldown) return;
+        if (!cameraReady || cooldown) return;
 
         cooldown = true;
         setTimeout(() => (cooldown = false), 800);
 
         const { start, stop } = getEndpoints();
-
-        if (!start || !stop) {
-            isRecording = !isRecording;
-            updateRecordUI();
-            console.log("Dummy recording (no backend)");
-            return;
-        }
-
         const endpoint = isRecording ? stop : start;
 
         try {
@@ -1346,40 +1340,48 @@ function initCameraSettingsActions() {
                 updateRecordUI();
             }
 
-            console.log(data.message);
         } catch (err) {
             console.log(err);
         }
     });
 
+    setInterval(updateCameraReady, 2000);
+
     updateRecordUI();
+    updateButtons(); 
 }
 
-async function checkAllCameras(options, cameraMap) {
-    for (const option of options) {
-        const key = option.dataset.camera;
-        const badge = option.querySelector(".status-badge");
-        const url = cameraMap[key];
+async function CheckCameraStatus() {
+    const options = document.querySelectorAll(".camera-option");
 
-        if (!url) {
-            setBadge(badge, "offline");
-            continue;
-        }
+    for (const opt of options) {
+        const badge = opt.querySelector(".status-badge");
+        const cam = opt.dataset.camera;
 
         try {
-            const res = await fetch("/camera/status");
+            const res = await fetch(`/camera/status/${cam}`);
             const data = await res.json();
+            // console.log("CHECK:", cam, CAMERA_CONFIG[cam]);
 
-            if (data.available) {
+            if (!CAMERA_CONFIG[cam]) {
+                setBadge(badge, "offline");
+                continue;
+            }
+
+            if (data.streaming) {
                 setBadge(badge, "online");
+            } else if (data.device) {
+                setBadge(badge, "connecting");
             } else {
                 setBadge(badge, "offline");
             }
-        } catch (err) {
+
+        } catch {
             setBadge(badge, "offline");
         }
     }
 }
+
 
 function setBadge(badge, state) {
     if (badge.classList.contains(state)) return;

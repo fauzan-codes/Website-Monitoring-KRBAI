@@ -2,67 +2,125 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from datetime import datetime
+import threading
+import atexit
+import time
 import cv2
 import os
 import re
 
 router = APIRouter(prefix="/camera")
 
-cap = cv2.VideoCapture(0)
-latest_frame = None
-
-recording = False
-video_writer = None
 record_thread = None
+frame_lock = threading.Lock()
+last_frame_time = 0
 
-SCREENSHOT_DIR = "data/screenshots/front"
-RECORD_DIR = "data/recordings/front"
+CAPTURE_DIRS = {
+    "front": "data/captures/front",
+    "side": "data/captures/side",
+    "bottom": "data/captures/bottom"
+}
 
-os.makedirs(SCREENSHOT_DIR, exist_ok=True)
-os.makedirs(RECORD_DIR, exist_ok=True)
+RECORD_DIRS = {
+    "front": "data/recordings/front",
+    "side": "data/recordings/side",
+    "bottom": "data/recordings/bottom"
+}
+
+for d in CAPTURE_DIRS.values():
+    os.makedirs(d, exist_ok=True)
+
+for d in RECORD_DIRS.values():
+    os.makedirs(d, exist_ok=True)
 
 
-def generate_frames():
-    global latest_frame, recording, video_writer
+cameras = {
+    "front": {
+        "cap": cv2.VideoCapture(5),
+        "latest_frame": None,
+        "recording": False,
+        "video_writer": None,
+        "last_frame_time": 0
+    },
+    "bottom": {
+        "cap": cv2.VideoCapture(0),  
+        "latest_frame": None,
+        "recording": False,
+        "video_writer": None,
+        "last_frame_time": 0
+    },
+    "side": {
+        "cap": None,
+        "latest_frame": None,
+        "recording": False,
+        "video_writer": None,
+        "last_frame_time": 0
+    }
+    
+}
 
-    if not cap.isOpened():
-        print("Camera gagal dibuka")
-        return
+camera_running = True
+def camera_loop(name):
+    cam = cameras[name]
 
-    while True:
+    while camera_running:
+        cap = cam["cap"]
+
+        if cap is None or not cap.isOpened():
+            with frame_lock:
+                cam["latest_frame"] = None
+            time.sleep(1)
+            continue
+
         success, frame = cap.read()
 
         if not success:
-            print("Camera disconnected")
+            with frame_lock:
+                cam["latest_frame"] = None
+            time.sleep(1)
+            continue
 
-            if recording and video_writer:
-                try:
-                    video_writer.release()
-                except:
-                    pass
+        with frame_lock:
+            cam["latest_frame"] = frame.copy()
+            cam["last_frame_time"] = time.time()
 
-            recording = False
-            video_writer = None
-            break
+            if cam["recording"] and cam["video_writer"]:
+                cam["video_writer"].write(frame)
 
-        latest_frame = frame.copy()
+        time.sleep(0.03)
 
-        if recording and video_writer:
-            video_writer.write(frame)
 
-        _, buffer = cv2.imencode(".jpg", frame)
-        frame_bytes = buffer.tobytes()
+def generate_frames(camera_name: str):
+    try:
+        while camera_running:
+            cam = cameras[camera_name]
 
-        yield (
-            b'--frame\r\n'
-            b'Content-Type: image/jpeg\r\n\r\n' +
-            frame_bytes +
-            b'\r\n'
-        )
+            with frame_lock:
+                frame = cam["latest_frame"]
+
+            if frame is None:
+                time.sleep(0.1)
+                continue
+
+            _, buffer = cv2.imencode(".jpg", frame)
+
+            yield (
+                b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' +
+                buffer.tobytes() +
+                b'\r\n'
+            )
+
+    except GeneratorExit:
+        print(f"[CLIENT DISCONNECTED] {camera_name}")
+
+    
 
 def get_next_index(folder_path: str, base_prefix: str, ext: str):
 
-    pattern = re.compile(rf"{base_prefix}_\d{{4}}-\d{{2}}-\d{{2}}_(\d+)\.{ext}$")
+    pattern = re.compile(
+        rf"{base_prefix}_\d{{4}}-\d{{2}}-\d{{2}}_(\d+)\.{ext}$"
+    )
     max_index = 0
 
     for filename in os.listdir(folder_path):
@@ -78,6 +136,24 @@ def get_next_index(folder_path: str, base_prefix: str, ext: str):
     return max_index + 1
 
 
+def generate_filename(camera_name: str, mode: str, ext: str, folder: str):
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    base_prefix = f"{camera_name}_{mode}_{date_str}"
+    next_index = get_next_index(folder, f"{camera_name}_{mode}", ext)
+    index_str = str(next_index).zfill(3)
+    filename = f"{base_prefix}_{index_str}.{ext}"
+
+    return os.path.join(folder, filename)
+
+def release_camera():
+    global camera_running
+    camera_running = False 
+
+    time.sleep(0.5) 
+
+    for cam in cameras.values():
+        if cam["cap"] and cam["cap"].isOpened():
+            cam["cap"].release()
 
 
 
@@ -89,118 +165,153 @@ def get_next_index(folder_path: str, base_prefix: str, ext: str):
 
 
 
-@router.get("/stream")
-def stream_camera():
+
+
+
+
+
+@router.get("/front/stream")
+def stream_front():
     return StreamingResponse(
-        generate_frames(),
+        generate_frames("front"),
+        media_type="multipart/x-mixed-replace; boundary=frame"
+    )
+
+@router.get("/bottom/stream")
+def stream_bottom():
+    return StreamingResponse(
+        generate_frames("bottom"),
+        media_type="multipart/x-mixed-replace; boundary=frame"
+    )
+
+@router.get("/side/stream")
+def stream_side():
+    return StreamingResponse(
+        generate_frames("side"),
         media_type="multipart/x-mixed-replace; boundary=frame"
     )
 
 
-# ================= SCREENSHOT =================
-@router.post("/screenshot")
-def take_screenshot():
-    global latest_frame
+# ================= CAPTURE =================
+@router.post("/capture/{camera_name}")
+def take_capture(camera_name: str):
+    cam = cameras.get(camera_name)
 
-    if latest_frame is None:
-        return {
-            "success": False,
-            "message": "Turn on camera first"
-        }
+    if not cam:
+        return {"success": False, "message": "Invalid camera"}
 
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    next_index = get_next_index(SCREENSHOT_DIR, "front_screenshot", "jpg")
+    frame = cam["latest_frame"]
 
-    filename = f"front_screenshot_{date_str}_{str(next_index).zfill(3)}.jpg"
-    filepath = os.path.join(SCREENSHOT_DIR, filename)
+    if frame is None:
+        return {"success": False, "message": "Camera not ready"}
 
-    cv2.imwrite(filepath, latest_frame)
+    folder = f"data/captures/{camera_name}"
+    os.makedirs(folder, exist_ok=True)
 
-    return {
-        "success": True,
-        "message": "Screenshot saved",
-        "file": filepath
-    }
+    with frame_lock:
+        path = generate_filename(
+            camera_name,
+            "capture",
+            "jpg",
+            folder
+        )
+        cv2.imwrite(path, frame)
+
+    return {"success": True, "file": path}
 
 
 # ================= RECORD START =================
-@router.post("/record/start")
-def start_recording():
-    global recording, video_writer, latest_frame
+@router.post("/record/start/{camera_name}")
+def start_record(camera_name: str):
+    cam = cameras.get(camera_name)
 
-    if recording:
-        return {
-            "success": False,
-            "message": "Already recording"
-        }
+    if not cam or cam["latest_frame"] is None:
+        return {"success": False}
 
-    if latest_frame is None:
-        return {
-            "success": False,
-            "message": "Turn on camera first"
-        }
+    h, w, _ = cam["latest_frame"].shape
 
-    height, width, _ = latest_frame.shape
+    folder = f"data/recordings/{camera_name}"
+    os.makedirs(folder, exist_ok=True)
 
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    next_index = get_next_index(RECORD_DIR, "front_recording", "avi")
+    with frame_lock:
+        path = generate_filename(
+            camera_name,
+            "recording",
+            "avi",
+            folder
+        )
 
-    filename = f"front_recording_{date_str}_{str(next_index).zfill(3)}.avi"
-    filepath = os.path.join(RECORD_DIR, filename)
-
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-
-    video_writer = cv2.VideoWriter(
-        filepath,
-        fourcc,
-        20.0,
-        (width, height)
+    cam["video_writer"] = cv2.VideoWriter(
+        path,
+        cv2.VideoWriter_fourcc(*'XVID'),
+        20,
+        (w, h)
     )
 
-    recording = True
+    if not cam["video_writer"].isOpened():
+        return {"success": False, "message": "Failed to start recording"}
 
-    return {
-        "success": True,
-        "message": "Recording started",
-        "file": filepath
-    }
+    cam["recording"] = True
+    return {"success": True, "message": "Start Recording"}
 
 
 # ================= RECORD STOP =================
-@router.post("/record/stop")
-def stop_recording():
-    global recording, video_writer
+@router.post("/record/stop/{camera_name}")
+def stop_record(camera_name: str):
+    cam = cameras.get(camera_name)
 
-    if not recording:
-        return {
-            "success": False,
-            "message": "Recording not active"
-        }
+    if not cam or not cam["recording"]:
+        return {"success": False}
 
-    recording = False
+    cam["recording"] = False
 
-    if video_writer:
-        try:
-            video_writer.release()
-        except:
-            pass
-        finally:
-            video_writer = None
+    if cam["video_writer"]:
+        cam["video_writer"].release()
+        cam["video_writer"] = None
+
+    return {"success": True}
+
+
+@router.get("/record/status/{camera_name}")
+def record_status(camera_name: str):
+    cam = cameras.get(camera_name)
+
+    if not cam:
+        return {"success": False}
 
     return {
-        "success": True,
-        "message": "Recording stopped"
+        "recording": cam["recording"]
     }
 
 
-@router.get("/record/status")
-def record_status():
+@router.get("/status/{camera_name}")
+def camera_status(camera_name: str):
+    cam = cameras.get(camera_name)
+
+    if not cam:
+        return {"device": False, "streaming": False}
+
+    now = time.time()
+
+    device = (
+        cam["cap"] is not None and
+        cam["cap"].isOpened()
+    )
+
+    streaming = (
+        device and
+        cam["latest_frame"] is not None and
+        (now - cam["last_frame_time"]) < 2
+    )
+
     return {
-        "recording": recording
+        "device": device,
+        "streaming": streaming
     }
 
-@router.get("/status")
-def camera_status():
-    return {
-        "available": cap.isOpened()
-    }
+
+
+
+for name in cameras:
+    threading.Thread(target=camera_loop, args=(name,), daemon=True).start()
+atexit.register(release_camera)

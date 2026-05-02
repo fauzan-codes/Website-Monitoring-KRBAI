@@ -194,12 +194,10 @@ body {
 }
 .widget.large { grid-column: span 2; }
 .widget.small { grid-column: span 1; min-height: 10rem; }
-
 .widget h3 {
     font-size: 1rem;
     color: var(--text-secondary);
 }
-
 .widget h3 i {
     color: var(--accent-primary);
     margin-right: 0.6rem
@@ -207,13 +205,13 @@ body {
 
 
 
-.widget-grid {
+.dashboard-page {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.3rem;
 }
 
-.widget-grid .widget-header {
+.dashboard-page .widget-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -240,13 +238,13 @@ body {
 
 
 /* ===== VALUE ===== */
-.widget-value {
+.dashboard-page .widget-value {
     font-size: 2rem;
     font-weight: 600;
     margin-top: 0.6rem;
 }
 
-.widget-info {
+.dashboard-page .widget-info {
     font-size: 0.9rem;
     color: var(--text-secondary);
     margin-top: 5px;
@@ -254,19 +252,19 @@ body {
 
 
 /* border status, bukan live */
-.status-move {
+.dashboard-page .status-move {
     padding: 0.4rem 0.7rem;
     border-radius: 1rem;
     font-size: 0.8rem;
     font-weight: 600;
 }
-.status-move.live { background-color: rgba(0, 200, 83, 0.2); color: var(--accent-green); }
-.status-move.offline { background-color: rgba(108, 117, 125, 0.2); color: var(--text-secondary); }
-.status-move.stable { background-color: rgba(0, 184, 212, 0.2); color: var(--accent-primary); }
+.dashboard-page .status-move.live { background-color: rgba(0, 200, 83, 0.2); color: var(--accent-green); }
+.dashboard-page .status-move.offline { background-color: rgba(108, 117, 125, 0.2); color: var(--text-secondary); }
+.dashboard-page .status-move.stable { background-color: rgba(0, 184, 212, 0.2); color: var(--accent-primary); }
 
 
 /* ===== bar status (battery & thruster) ===== */
-.progress-bar {
+.dashboard-page .progress-bar {
     width: 100%;
     height: 0.5rem;
     background: #374151;
@@ -275,7 +273,7 @@ body {
     overflow: hidden;
 }
 
-.progress {
+.dashboard-page .progress {
     height: 100%;
     width: 0%;
     background: var(--accent-primary);
@@ -317,7 +315,7 @@ body {
 
 .camera-controls .btn-icon:disabled {
     opacity: 0.35;
-    cursor: progress;
+    cursor: default;
     background: transparent;
     color: #5f6775;
 }
@@ -350,7 +348,7 @@ body {
 
 
 /* ===== switch button ===== */
-.camera-controls .switch {
+.dashboard-page .camera-controls .switch {
     position: relative;
     display: inline-block;
     width: 40px;
@@ -358,11 +356,11 @@ body {
     flex-shrink: 0;
 }
 
-.camera-controls .switch input { 
+.dashboard-page .camera-controls .switch input { 
     display: none; 
 }
 
-.camera-controls .switch .slider {
+.dashboard-page .camera-controls .switch .slider {
     position: absolute;
     inset: 0;
     cursor: pointer;
@@ -371,7 +369,7 @@ body {
     border-radius: 50px;
 }
 
-.camera-controls .switch .slider::before {
+.dashboard-page .camera-controls .switch .slider::before {
     content: "";
     position: absolute;
     width: 16px;
@@ -382,18 +380,18 @@ body {
     border-radius: 50%;
     transition: transform 0.3s ease;
 }
-.camera-controls .switch input:checked + .slider { 
+.dashboard-page .camera-controls .switch input:checked + .slider { 
     background-color: var(--accent-primary); 
 }
 
-.camera-controls .switch input:checked + .slider::before {
+.dashboard-page .camera-controls .switch input:checked + .slider::before {
     transform: translateX(19px);
 }
 
 
 
 /* ========== Camera Frame ========== */
-.camera-feed {
+.dashboard-page .camera-feed {
     width: 100%;
     aspect-ratio: 16 / 9;
 
@@ -431,7 +429,7 @@ body {
 
 
 /* ========== Button Time Display ========== */
-.mission-btn {
+.dashboard-page .mission-btn {
     width: 100%; 
     margin-top: 1.3rem;
     padding: 0.7rem; 
@@ -449,54 +447,54 @@ body {
     justify-content: center; 
     transition: background-color 0.3s, color 0.3s;
 }
-.mission-btn i { margin-right: 0.5rem; }
-.mission-btn.start { 
+.dashboard-page .mission-btn i { margin-right: 0.5rem; }
+.dashboard-page .mission-btn.start { 
     display: block;
     background-color: var(--accent-primary); 
     color: #f4f7fa; 
 }
-.mission-btn.start:hover { background-color: #00e5ff; }
-.mission-btn.stop { 
+.dashboard-page .mission-btn.start:hover { background-color: #00e5ff; }
+.dashboard-page .mission-btn.stop { 
     background-color: var(--accent-red);
     display: none; 
     color: var(--text-primary); 
 }
-.mission-btn.stop:hover { background-color: #ff7875; }
-.mission-btn.reset { 
+.dashboard-page .mission-btn.stop:hover { background-color: #ff7875; }
+.dashboard-page .mission-btn.reset { 
     background-color: #434d5b; 
     display: none; 
     color: var(--text-primary); 
 }
-.mission-btn.reset:hover { background-color: #5c6776; }
+.dashboard-page .mission-btn.reset:hover { background-color: #5c6776; }
 
 
 
 
 /* ========== ORIENTATION ========== */
-.orientation-view {
+.dashboard-page .orientation-view {
     height: 11.2rem;
     background: #111820;
     border-radius: 0.6rem;
     margin-bottom: 1.5rem;
 }
 
-.orientation-data {
+.dashboard-page .orientation-data {
     display: flex;
     text-align: center;
 }
 
-.orientation-data .data-item {
+.dashboard-page .orientation-data .data-item {
     flex: 1;
 }
 
-.orientation-data .data-item p {
+.dashboard-page .orientation-data .data-item p {
     color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
 
 
 /* ===== reset button ===== */
-.orientation-btn {
+.dashboard-page .orientation-btn {
     background-color: var(--border-color);
     border: none;
     color: var(--text-primary);
@@ -520,45 +518,45 @@ body {
 
     flex-shrink: 0;
 }
-.orientation-btn:hover { 
+.dashboard-page .orientation-btn:hover { 
     background-color: #3c4656; 
 }
 
-.orientation-btn:disabled {
+.dashboard-page .orientation-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.orientation-btn:disabled:hover {
+.dashboard-page .orientation-btn:disabled:hover {
     background-color: var(--border-color);
 }
 
-.orientation-btn i { 
+.dashboard-page .orientation-btn i { 
     margin-right: 0.6rem; 
 }
 
 
 
 /* ========== Thruster =========== */
-.thruster-list {
+.dashboard-page .thruster-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.thruster-list .thruster-item {
+.dashboard-page .thruster-list .thruster-item {
     display: grid;
     grid-template-columns: 6.5rem 1fr 7rem;
     gap: 0.8rem;
     align-items: center;
 }
 
-.thruster-item p {
+.dashboard-page .thruster-item p {
     font-size: 0.9rem;
     color: white;
 }
 
-.thruster-item .thruster-info {
+.dashboard-page .thruster-item .thruster-info {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -566,7 +564,7 @@ body {
     min-width: 7rem;
 }
 
-.thruster-item .thruster-status {
+.dashboard-page .thruster-item .thruster-status {
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-secondary);
@@ -574,12 +572,12 @@ body {
     text-align: right;
 }
 
-.thruster-item .thruster-status.active {
+.dashboard-page .thruster-item .thruster-status.active {
     color: var(--accent-primary);
     font-weight: 600;
 }
 
-.thruster-item .thruster-value {
+.dashboard-page .thruster-item .thruster-value {
     font-size: 0.9rem;
     font-weight: 600;
     min-width: 2rem;
@@ -587,12 +585,12 @@ body {
     color: white;
 }
 
-.thruster-item .thruster-percent {
+.dashboard-page .thruster-item .thruster-percent {
     color: var(--text-secondary);
     font-size: 0.85rem;
 }
 
-.thruster-footer {
+.dashboard-page .thruster-footer {
     margin-top: 2.6rem; 
     padding-top: 1rem; 
     border-top: 0.1rem solid var(--border-color); 
@@ -610,15 +608,15 @@ body {
         font-size: 90%;
     }
 
-    .widget-value {
+    .dashboard-page .widget-value {
         font-size: 1.7rem;
     }
 
-    .camera-controls {
+    .dashboard-page .camera-controls {
         gap: 0.5rem;
     }
 
-    .camera-controls .btn-icon {
+    .dashboard-page .camera-controls .btn-icon {
         width: 2rem;
         height: 2rem;
         min-width: 1.5rem;
@@ -626,17 +624,17 @@ body {
     }
 
 
-    .camera-controls .switch {
+    .dashboard-page .camera-controls .switch {
         width: 34px;
         height: 20px;
     }
 
-    .camera-controls .switch .slider::before {
+    .dashboard-page .camera-controls .switch .slider::before {
         width: 14px;
         height: 14px;
     }
 
-    .camera-controls .switch input:checked + .slider::before {
+    .dashboard-page .camera-controls .switch input:checked + .slider::before {
         transform: translateX(14px);
     }
 }
@@ -649,40 +647,40 @@ body {
         font-size: 78%;
     }
 
-    .widget-grid {
+    .dashboard-page {
         grid-template-columns: repeat(2, 1fr);
     }
 
 
-    .camera-controls {
+    .dashboard-page .camera-controls {
         gap: 0.7rem;
     }
 
-    .camera-controls .btn-icon {
+    .dashboard-page .camera-controls .btn-icon {
         width: 2rem;
         height: 2rem;
         min-width: 1.5rem;
         min-height: 1.5rem;
     }
 
-    .camera-controls .switch {
+    .dashboard-page .camera-controls .switch {
         width: 32px;
         height: 18px;
     }
 
-    .camera-controls .switch .slider::before {
+    .dashboard-page .camera-controls .switch .slider::before {
         width: 12px;
         height: 12px;
     }
 
-    .camera-controls .switch input:checked + .slider::before {
+    .dashboard-page .camera-controls .switch input:checked + .slider::before {
         transform: translateX(14px);
     }
 
 
     
     /* side bar system */
-    .sidebar-icon-only {
+    .dashboard-page .sidebar-icon-only {
         position: fixed;
         left: -220px;
         width: 220px;
@@ -694,55 +692,55 @@ body {
     }
 
     /* saat expand */
-    .sidebar-icon-only.active {
+    .dashboard-page .sidebar-icon-only.active {
         left: 0;
     }
 
     /* menu alignment */
-    .sidebar-menu li a {
+    .dashboard-page .sidebar-menu li a {
         justify-content: flex-start;
         padding-left: 1.5rem;
     }
 
-    .sidebar-menu li a span {
+    .dashboard-page .sidebar-menu li a span {
         display: inline;
     }
 
-    .top-bar .logo-top {
+    .dashboard-page .top-bar .logo-top {
         display: flex;
         margin-right: 2rem;
         cursor: pointer;
     }
 
-    .top-bar .logo-top img {
+    .dashboard-page .top-bar .logo-top img {
         width:3.2rem;
         height: 3.2rem;
         border-radius: 50%;
     }
 
-    .top-bar-title {
+    .dashboard-page .top-bar-title {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    .sidebar-icon-only.active .sidebar-menu li a span {
+    .dashboard-page .sidebar-icon-only.active .sidebar-menu li a span {
         display: inline;
     }
 
-    .sidebar-icon-only.active .sidebar-header {
+    .dashboard-page .sidebar-icon-only.active .sidebar-header {
         justify-content: center;
         padding-left: 1.5rem;
         margin-top: 1rem;
         margin-bottom: 1rem;
     }
 
-    .sidebar-header .logo img {
+    .dashboard-page .sidebar-header .logo img {
         width: 7rem;
         height: 7rem;
     }
 
-    .main-container {
+    .dashboard-page .main-container {
         margin-left: 0rem;
     }
 
@@ -756,30 +754,30 @@ body {
         font-size: 70%;
     }
 
-    .camera-controls {
+    .dashboard-page .camera-controls {
         gap: 0.5rem;
     }
 
-    .camera-controls .btn-icon {
+    .dashboard-page .camera-controls .btn-icon {
         width: 2rem;
         height: 2rem;
         min-width: 1.5rem;
         min-height: 1.5rem;
     }
 
-    .camera-controls .switch {
+    .dashboard-page .camera-controls .switch {
         width: 28px;
         height: 16px;
     }
 
-    .camera-controls .switch .slider::before {
+    .dashboard-page .camera-controls .switch .slider::before {
         width: 10px;
         height: 10px;
         top: 3px;
         left: 3px;
     }
 
-    .camera-controls .switch input:checked + .slider::before {
+    .dashboard-page .camera-controls .switch input:checked + .slider::before {
         transform: translateX(12px);
     }
 }
@@ -803,11 +801,11 @@ body {
     gap: 1.3rem;
 }
 
-.control-panel {
+.thruster-page .control-panel {
     display: none;
 }
 
-.active-panel {
+.thruster-page .active-panel {
     display: block;
 }
 
@@ -819,7 +817,6 @@ body {
     border-radius: 0.8rem;
     padding: 1.2rem;
 }
-
 .control-section .section-header {
     display: flex;
     justify-content: space-between;
@@ -827,7 +824,6 @@ body {
     gap: 1rem;
     margin-bottom: 1.3rem;
 }
-
 .control-section .section-header h3 {
     font-size: 1rem;
     color: var(--text-secondary);
@@ -851,6 +847,7 @@ body {
 .btn {
     padding: 0.75rem 1rem;
     border-radius: 0.6rem;
+    border: 0.1rem solid rgba(0, 0, 0, 0);
     background: var(--border-color);
     color: white;
     cursor: pointer;
@@ -861,10 +858,12 @@ body {
 
 .btn:hover {
     background: #3a4555;
+    border-color: var(--accent-primary);
 }
 
 .btn.active,
 .btn-primary {
+    border: none;
     background: var(--accent-primary);
 }
 
@@ -873,6 +872,7 @@ body {
 }
 
 .btn-danger {
+    border: none;
     background: var(--accent-red);
 }
 
@@ -900,18 +900,18 @@ body {
 
 
 /* ========== gamepad status =========== */
-.gamepad-status {
+.thruster-page .gamepad-status {
     padding: 0.5rem 1rem;
     border-radius: 1.2rem;
     font-size: 0.85rem;
 }
 
-.gamepad-status.connected {
+.thruster-page .gamepad-status.connected {
     background: rgba(0, 200, 83, 0.15);
     color: var(--accent-green);
 }
 
-.gamepad-status.disconnected {
+.thruster-page .gamepad-status.disconnected {
     background: rgba(255, 77, 79, 0.15);
     color: var(--accent-red);
 }
@@ -919,20 +919,20 @@ body {
 
 
 /* ========== keyboard layout =========== */
-.keyboard-layout {
+.thruster-page .keyboard-layout {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
 }
 
-.middle-row,
-.vertical-row {
+.thruster-page .middle-row,
+.thruster-page .vertical-row {
     display: flex;
     gap: 1rem;
 }
 
-.control-btn {
+.thruster-page .control-btn {
     width: 5.5rem;
     height: 5.5rem;
     background: var(--bg-primary);
@@ -945,30 +945,30 @@ body {
     transition: 0.3s ease;
 }
 
-.control-btn:hover {
+.thruster-page .control-btn:hover {
     border-color: var(--accent-primary);
     transform: translateY(-0.2rem);
 }
 
-.stop-btn {
+.thruster-page .stop-btn {
     background: var(--accent-red);
 }
 
-.control-btn.active-press {
+.thruster-page .control-btn.active-press {
     border-color: var(--accent-primary);
     background: rgba(0, 123, 255, 0.15);
     transform: scale(0.95);
     box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
 }
 
-.control-btn.stop-btn.active-press {
+.thruster-page .control-btn.stop-btn.active-press {
     background: rgba(255, 77, 79, 0.2);
 }
 
 
 
 /* ========== gamepad =========== */
-.gamepad-box {
+.thruster-page .gamepad-box {
     background: var(--bg-primary);
     border-radius: 0.8rem;
     padding: 1.5rem;
@@ -979,12 +979,12 @@ body {
 
 
 /* ========== joystick =========== */
-.joystick-wrapper {
+.thruster-page .joystick-wrapper {
     display: flex;
     justify-content: center;
 }
 
-.joystick-base {
+.thruster-page .joystick-base {
     width: 14rem;
     height: 14rem;
     background: #111820;
@@ -992,7 +992,7 @@ body {
     position: relative;
 }
 
-.joystick-stick {
+.thruster-page .joystick-stick {
     width: 5rem;
     height: 5rem;
     background: var(--accent-primary);
@@ -1010,17 +1010,17 @@ body {
 
 
 /* ========== thruster test =========== */
-.thruster-test-header {
+.thruster-page .thruster-test-header {
     flex-wrap: wrap;
 }
 
-.motor-test-actions {
+.thruster-page .motor-test-actions {
     display: flex;
     gap: 0.8rem;
     flex-wrap: wrap;
 }
 
-.motor-test-actions .btn {
+.thruster-page .motor-test-actions .btn {
     min-width: 8.7rem;
     height: 2.6rem;  
     
@@ -1032,30 +1032,30 @@ body {
     flex-shrink: 0;
 }
 
-.motor-grid {
+.thruster-page .motor-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.2rem;
 }
 
-.motor-control {
+.thruster-page .motor-control {
     background: var(--bg-primary);
     border: 0.1rem solid var(--border-color);
     border-radius: 0.8rem;
     padding: 1rem;
 }
 
-.motor-header {
+.thruster-page .motor-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
 }
 
-.motor-header label {
+.thruster-page .motor-header label {
     font-weight: 500;
 }
 
-.motor-value {
+.thruster-page .motor-value {
     color: var(--accent-primary);
     font-weight: 600;
 }
@@ -1063,7 +1063,7 @@ body {
 
 
 /* ========== slider =========== */
-.motor-slider {
+.thruster-page .motor-slider {
     width: 100%;
     appearance: none;
     height: 0.5rem;
@@ -1071,7 +1071,7 @@ body {
     border-radius: 1rem;
 }
 
-.motor-slider::-webkit-slider-thumb {
+.thruster-page .motor-slider::-webkit-slider-thumb {
     appearance: none;
     width: 1rem;
     height: 1rem;
@@ -1080,7 +1080,7 @@ body {
     cursor: pointer;
 }
 
-.slider-value-container {
+.thruster-page .slider-value-container {
     display: flex;
     justify-content: space-between;
     margin-top: 0.8rem;
@@ -1092,34 +1092,34 @@ body {
 
 /* ====================================== */
 @media (max-width: 900px) {
-    .motor-grid {
+    .thruster-page .motor-grid {
         grid-template-columns: 1fr;
     }
 
-    .control-btn {
+    .thruster-page .control-btn {
         width: 4.5rem;
         height: 4.5rem;
     }
 
-    .section-header {
+    .thruster-page .section-header {
         flex-direction: row;
         justify-content: space-between;
     }
 }
 
 @media (max-width: 500px) {
-    .button-group,
-    .motor-test-actions {
+    .thruster-page .button-group,
+    .thruster-page .motor-test-actions {
         flex-direction: column;
         width: 100%;
     }
 
-    .btn {
+    .thruster-page .btn {
         width: 100%;
     }
 
-    .middle-row,
-    .vertical-row {
+    .thruster-page .middle-row,
+    .thruster-page .vertical-row {
         gap: 0.7rem;
     }
 }
@@ -1165,6 +1165,12 @@ body {
     border-radius: 0.8rem;
     padding: 1.2rem;
     text-align: center;
+    transition: 0.3s;
+}
+
+.mission-card:hover{
+    border-color: var(--accent-primary);
+    transform: translateY(-3px);
 }
 
 .mission-card i {
@@ -1582,7 +1588,6 @@ body {
     box-shadow: 0 0 0 1px rgba(0,184,212,0.2);
 }
 
-/* ===== STATUS BADGE (IMPROVED) ===== */
 .camera-settings-page .status-badge {
     font-size: 0.75rem;
     font-weight: 600;
